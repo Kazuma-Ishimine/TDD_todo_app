@@ -3,11 +3,11 @@ import storybook from "eslint-plugin-storybook";
 
 import js from "@eslint/js";
 import globals from "globals";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
-const jsxA11y = require("eslint-plugin-jsx-a11y");
 import vitest from "@vitest/eslint-plugin";
 import importPlugin from "eslint-plugin-import";
 import unusedImports from "eslint-plugin-unused-imports";
