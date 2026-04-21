@@ -73,7 +73,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
 
       - name: Vitest unit test #CI環境でnpm vitestを実行
-        run: npx vitest run
+        run: npm test
         working-directory: frontend
 
       - name: "Report Vitest Result"
