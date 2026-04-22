@@ -1,36 +1,45 @@
 # frontendでPlaywright起因のVitestエラーが出たときの切り分け
 
-## エラー
+## 対象読者
 
-frontend の `npx vitest run` 実行時に、Playwright の Chromium 実行ファイルがなくて失敗しました。
+- frontend の CI で Vitest を回している人
+- unit test のつもりで実行したら Playwright 側のエラーが出た人
+- browser test と unit test の境界を整理したい人
+
+## テーマ
+
+Vitest の失敗がそのまま unit test の問題とは限らず、`vite.config.ts` の browser mode 設定まで確認する必要がある、という観点でまとめます。
+
+## エラー概要
+
+frontend の `npx vitest run` 実行時に、Playwright の Chromium 実行ファイルがなくて失敗しました。`frontend` の workflow は `.github/workflows/frontend.yaml` で独立しているため、backend 側を直しても frontend CI の失敗は別で残ります。
 
 ## 原因
 
-`frontend/vite.config.ts` で Vitest の browser mode と Playwright が有効になっていました。  
-そのため、通常の unit test を回したいだけでも先にブラウザ起動が必要になっていました。
+`frontend/vite.config.ts` で Vitest の browser mode と Playwright を前提にした設定が入っていたため、通常の unit test を回したいだけでも先にブラウザ実行環境が必要になっていました。つまり、表面上は Vitest の失敗でも、根本原因はテスト実行モードの混在です。
 
-## ユーザーの考え
+## 結論
 
-> backend.yamlなのになぜ？ frontendの影響を受けてる？
+### 今回の対応
 
-ここで重要だったのは、`push` / `pull_request` では backend と frontend の workflow が別々に動いていることです。  
-つまり backend を直しても、frontend 側の workflow は独立して失敗します。
+- `frontend/vite.config.ts` から browser mode 前提の構成を外した
+- `test.include` を `src/**/*.{test,spec}.{ts,tsx}` に限定した
+- `frontend/src/App.test.tsx` を追加した
+- `frontend/package.json` に `test`, `typecheck` script を定義した
+- `.github/workflows/frontend.yaml` のテスト実行を `npx vitest run` から `npm test` に変更した
 
-## 修正
+### 見直しポイント
 
-- `frontend/vite.config.ts` から Storybook + Playwright を使う Vitest 設定を外した
-- `test.include` を `src/**/*.{test,spec}.{ts,tsx}` に限定
-- `frontend/src/App.test.tsx` を追加
-- `frontend/package.json` に `test`, `typecheck` script を追加
-- `.github/workflows/frontend.yaml` のテスト実行を `npx vitest run` から `npm test` に変更
+- unit test と browser test を同じ入口で回すと、原因の切り分けが難しくなります
+- workflow 名と `working-directory` を見れば、どの job が失敗しているか判断しやすくなります
+- `vite.config.ts` の `test` 設定は CI の挙動にそのまま影響します
 
-## 対策
+## まとめ
 
-unit test と browser test は分離して運用するのが安全です。  
-通常の CI では unit test を回し、Playwright や Storybook の browser test は別ジョブに分けると切り分けしやすくなります。
+今回の失敗は、Vitest 自体よりも「どのモードでテストを動かしていたか」の問題でした。
 
-## ユーザーが身につけるべきこと
+- unit test 用の設定は unit test に絞る
+- browser test は別 job に分ける
+- CI では `npm test` のように入口を一本化する
 
-- workflow 名と失敗ログの実行パスを見ると、どのジョブが落ちているか判断しやすい
-- Vitest の失敗でも、実際の原因が Playwright や Storybook 設定にあることは普通にある
-- `vite.config.ts` の test 設定は CI の挙動に直結する
+こうしておくと、Playwright 由来の失敗を unit test 側に持ち込みにくくなります。

@@ -1,32 +1,42 @@
 # typescript-eslintの型情報不足エラーをどう直したか
 
-## エラー
+## 対象読者
+
+- backend で `typescript-eslint` の型付きルールを使っている人
+- `recommendedTypeChecked` を有効にしたあとに lint が落ちた人
+- 型情報取得の設定漏れを見直したい人
+
+## テーマ
+
+`typescript-eslint` の型付きルールは、ルール追加だけでは動かず、型情報を取る設定までセットで必要になる、という観点で整理します。
+
+## エラー概要
 
 `npm run lint` 実行時に、`@typescript-eslint/await-thenable` が型情報を取れず失敗しました。
 
 ## 原因
 
-`typescript-eslint` の型付きルールを使う `recommendedTypeChecked` を有効にしていた一方で、型情報取得の設定が不足していました。  
-具体的には `parserOptions.projectService: true` が backend の ESLint 設定にありませんでした。
+`backend/eslint.config.mts` では `tseslint.configs.recommendedTypeChecked` を使っている一方で、型情報取得に必要な `parserOptions.projectService: true` が不足していると、型付きルールは動けません。今回のエラーの中心は、ルール自体ではなくその前提設定でした。
 
-## ユーザーの考え
+## 結論
 
-> typescript-eslintでエラーが起きてるね
-
-この見立ても正しく、エラーの中心は `typescript-eslint` の型付き lint 設定でした。
-
-## 修正
+### 今回の対応
 
 - `backend/eslint.config.mts` に `parserOptions.projectService: true` を追加
-- backend 用の設定として `globals.browser` を `globals.node` に変更
+- backend 用の globals を `globals.browser` から `globals.node` に変更
 
-## 対策
+### 見直しポイント
 
-`tseslint.configs.recommendedTypeChecked` を使うなら、型情報の取得設定もセットで入れるべきです。  
-「型付き lint を使うかどうか」を最初に決めて、設定を中途半端にしないことが重要です。
+- `recommended` と `recommendedTypeChecked` では必要条件が違います
+- 型付きルールを入れるなら、型情報の取得方法も同じタイミングで設定する必要があります
+- backend / frontend で実行環境が違うなら、globals も分けておくほうが自然です
 
-## ユーザーが身につけるべきこと
+## まとめ
 
-- `recommended` と `recommendedTypeChecked` は必要条件が違う
-- `typescript-eslint` のエラーはルール自体より設定不足が原因のことが多い
-- backend / frontend の globals は実行環境に合わせて分けるべき
+`typescript-eslint` のエラーでは、ルールの不具合より設定不足を疑うほうが早い場合があります。
+
+- `recommendedTypeChecked` を使う
+- `projectService: true` も入れる
+- 実行環境に合わせて globals を調整する
+
+この 3 つをセットで見ると切り分けしやすくなります。
