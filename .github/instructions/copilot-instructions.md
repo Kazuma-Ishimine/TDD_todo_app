@@ -11,6 +11,14 @@ source of truth for protected paths.
 - You may read protected files for context, but you must not edit, rename, move,
   or delete them unless the user explicitly asks for it.
 
+# Design documents
+
+- Design documents are stored under `docs/design/`.
+- When implementation, review, or documentation tasks need design context, check
+  `docs/design/` first before assuming requirements from code alone.
+- Treat the relevant files under `docs/design/` as the primary design reference
+  unless the user explicitly says otherwise.
+
 # backend
 
 ### Directory Structure for Clean Architecture
