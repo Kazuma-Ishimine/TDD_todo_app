@@ -1,33 +1,41 @@
 # React is declared but its value is never readをどう理解するか
 
-## エラー
+## 対象読者
 
-`npm run typecheck` 実行時に、`src/stories/Button.tsx` と `src/stories/Header.tsx` で `import React from 'react'` が未使用扱いになって失敗しました。
+- React + TypeScript のプロジェクトで `typecheck` を回している人
+- `jsx: react-jsx` の構成で古い `import React` が残っている人
+- Storybook の生成ファイルをそのまま使っている人
+
+## テーマ
+
+`React is declared but its value is never read` を「React 非対応」ではなく「今の JSX runtime と import の書き方がずれている問題」として整理します。
+
+## エラー概要
+
+`npm run typecheck` 実行時に、`frontend/src/stories/Button.tsx` と `frontend/src/stories/Header.tsx` で `import React from 'react'` が未使用扱いになって失敗しました。記事内の経緯では、その後 `frontend/src/stories/Page.tsx` も同じ理由で見直しています。
 
 ## 原因
 
-React 非対応だったわけではなく、`jsx: react-jsx` の自動 JSX runtime を使っているのに古い `import React` が残っていたのが原因です。  
-さらに `noUnusedLocals: true` により、未使用 import が CI ではエラーになっていました。
+原因は React が使えないことではなく、`jsx: react-jsx` の自動 JSX runtime を使っているのに、古い `import React` が残っていたことでした。さらに `noUnusedLocals: true` が有効なため、未使用 import がそのまま型チェック失敗になります。
 
-## ユーザーの考え
+## 結論
 
-> これは、Reactに対応してないから？
-
-自然な疑問ですが、実際には「React が使えない」のではなく、「React を import しなくていい構成なのに古い記述が残っていた」が正しい理解でした。
-
-## 修正
+### 今回の対応
 
 - `frontend/src/stories/Button.tsx` の `import React` を削除
 - `frontend/src/stories/Header.tsx` の `import React` を削除
-- 同じ理由で次に落ちる `frontend/src/stories/Page.tsx` の `import React` も削除
+- 同じ理由で `frontend/src/stories/Page.tsx` の `import React` も削除
 
-## 対策
+### どう理解すると切り分けやすいか
 
-React 17+ 以降の新しい JSX transform を使う場合は、古い `import React` を残さないようにします。  
-特に Storybook のサンプルコードやテンプレート生成物は古い記法のまま残っていることがあるため、型チェック前に見直す価値があります。
+- `TS6133` は「未使用変数」の系統であって、React 非対応を直接示すエラーではありません
+- 新しい JSX transform では、JSX を書くためだけの `import React` は不要です
+- Storybook のサンプルやテンプレート生成物は、現在の tsconfig と合わない書き方が残ることがあります
 
-## ユーザーが身につけるべきこと
+## まとめ
 
-- `TS6133` は React 非対応ではなく未使用変数エラー
-- JSX runtime の設定次第で必要な import は変わる
-- 生成コードやテンプレートコードは、そのままだと今の tsconfig と合わないことがある
+このエラーで先に確認したいのは、React が使えるかどうかではなく、現在の JSX runtime と import の書き方が一致しているかです。
+
+- 自動 JSX runtime なら古い `import React` は不要
+- `noUnusedLocals` が有効だと未使用 import は CI 失敗につながる
+- 生成コードも今の設定に合わせて見直す価値がある

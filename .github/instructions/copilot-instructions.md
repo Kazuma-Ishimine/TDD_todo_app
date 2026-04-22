@@ -1,3 +1,31 @@
+# Protected paths
+
+Use [`.github/rules/protected-paths.md`](../rules/protected-paths.md) as the
+source of truth for protected paths.
+
+- Do not modify files or folders listed in `.github/rules/protected-paths.md`
+  unless the user explicitly requests a change to that exact path.
+- Currently protected:
+  - `AGENTS.md`
+  - `README.md`
+- You may read protected files for context, but you must not edit, rename, move,
+  or delete them unless the user explicitly asks for it.
+
+# Design documents
+
+- Design documents are stored under `docs/design/`.
+- When implementation, review, or documentation tasks need design context, check
+  `docs/design/` first before assuming requirements from code alone.
+- Treat the relevant files under `docs/design/` as the primary design reference
+  unless the user explicitly says otherwise.
+
+# Review comments
+
+- Review feedback files are stored under `review/`.
+- When asked to address review comments or draft replies, check `review/` first.
+- Use the review files as the primary source for reviewer feedback unless the
+  user provides a different source.
+
 # backend
 
 ### Directory Structure for Clean Architecture
