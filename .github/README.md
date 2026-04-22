@@ -98,6 +98,31 @@ Other examples:
 @WorkSummaryAgent recent changes
 ```
 
+### `@ReviewResponseAgent`
+
+Read review comments from `review/`, fix what should be fixed, and draft review
+replies in Japanese.
+
+Example:
+
+```text
+@ReviewResponseAgent review/Master-20260421.md の指摘に対応して
+```
+
+Other examples:
+
+```text
+@ReviewResponseAgent review/ の指摘を見て、修正案と返信文をまとめて
+@ReviewResponseAgent backend 関連のレビューコメントだけ対応して
+```
+
+Behavior:
+
+- Uses files under `review/` as the main review input
+- Applies safe repository fixes when the review point is valid
+- Produces concise Japanese reply drafts for each handled comment
+- Writes each reply draft directly under the corresponding fix/disposition item
+
 ## Notes
 
 - Prompt commands are best for lightweight repeatable tasks.

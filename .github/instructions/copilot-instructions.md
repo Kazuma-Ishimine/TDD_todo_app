@@ -19,6 +19,13 @@ source of truth for protected paths.
 - Treat the relevant files under `docs/design/` as the primary design reference
   unless the user explicitly says otherwise.
 
+# Review comments
+
+- Review feedback files are stored under `review/`.
+- When asked to address review comments or draft replies, check `review/` first.
+- Use the review files as the primary source for reviewer feedback unless the
+  user provides a different source.
+
 # backend
 
 ### Directory Structure for Clean Architecture
