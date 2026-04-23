@@ -22,4 +22,4 @@
 - Linearity Principle
 - Clarity Principle
 - Safety Principle
-- 
+- No ARIA is better than bad ARIA.
