@@ -1,4 +1,5 @@
 import { Hono, type Context } from 'hono';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import type { AppController } from '../controllers/app-controller';
 import type { TodoController } from '../controllers/todo-controller';
 import type { JsonHttpResponse } from '../controllers/http-presenter';
@@ -111,5 +112,5 @@ async function readRequestBody(context: Context): Promise<unknown> {
 }
 
 function toJsonResponse(context: Context, response: JsonHttpResponse) {
-  return context.json(response.body, response.status);
+  return context.json(response.body, response.status as ContentfulStatusCode);
 }

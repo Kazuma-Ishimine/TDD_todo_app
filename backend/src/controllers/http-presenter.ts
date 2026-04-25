@@ -7,12 +7,18 @@ type ErrorBody = {
   message: string;
 };
 
+/**
+ * Response body structure for API responses.
+ */
 export type ApiResponseBody = {
   data: unknown;
   success: boolean;
   error?: ErrorBody;
 };
 
+/**
+ * JSON HTTP response structure.
+ */
 export type JsonHttpResponse = {
   status: number;
   body: ApiResponseBody;

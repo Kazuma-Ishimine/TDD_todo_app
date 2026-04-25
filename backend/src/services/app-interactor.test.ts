@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { AppError } from '../models/app-error';
 import type { AppRepository } from '../repositories/app-repository';
 import type { TodoRepository } from '../repositories/todo-repository';
 import { createAppInteractor } from './app-interactor';

@@ -9,10 +9,25 @@ import {
 import { parseCreateAppInput, parseUpdateAppInput } from './request-validation';
 
 export type AppController = {
+  /**
+   * Creates a new app.
+   */
   create(body: unknown): Promise<JsonHttpResponse>;
+  /**
+   * Lists all apps.
+   */
   list(): Promise<JsonHttpResponse>;
+  /**
+   * Retrieves an app by ID.
+   */
   get(appId: string): Promise<JsonHttpResponse>;
+  /**
+   * Updates an app.
+   */
   update(appId: string, body: unknown): Promise<JsonHttpResponse>;
+  /**
+   * Deletes an app.
+   */
   delete(appId: string): Promise<JsonHttpResponse>;
 };
 

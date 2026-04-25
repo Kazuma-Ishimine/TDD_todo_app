@@ -1,3 +1,6 @@
+/**
+ * Todo entity representing a single todo item.
+ */
 export type TodoEntity = {
   id: string;
   appId: string;

@@ -30,9 +30,8 @@ describe('AppError cross-layer propagation', () => {
       caught = e;
     }
     expect(isAppError(caught)).toBe(true);
-    if (isAppError(caught)) {
-      expect(caught.code).toBe('NOT_FOUND');
-    }
+    // isAppError(caught) is verified true by the assertion above; cast is safe here
+    expect((caught as AppError).code).toBe('NOT_FOUND');
   });
 
   it('interactor throws AppError with CONFLICT on duplicate create', async () => {
@@ -45,9 +44,8 @@ describe('AppError cross-layer propagation', () => {
       caught = e;
     }
     expect(isAppError(caught)).toBe(true);
-    if (isAppError(caught)) {
-      expect(caught.code).toBe('CONFLICT');
-    }
+    // isAppError(caught) is verified true by the assertion above; cast is safe here
+    expect((caught as AppError).code).toBe('CONFLICT');
   });
 
   it('AppError preserves code and message across layer boundaries', () => {
@@ -88,8 +86,7 @@ describe('AppError cross-layer propagation', () => {
       caught = e;
     }
     expect(isAppError(caught)).toBe(true);
-    if (isAppError(caught)) {
-      expect(caught.code).toBe('REPOSITORY_ERROR');
-    }
+    // isAppError(caught) is verified true by the assertion above; cast is safe here
+    expect((caught as AppError).code).toBe('REPOSITORY_ERROR');
   });
 });

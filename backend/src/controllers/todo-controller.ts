@@ -12,10 +12,25 @@ import {
 } from './request-validation';
 
 export type TodoController = {
+  /**
+   * Creates a new todo.
+   */
   create(appId: string, body: unknown): Promise<JsonHttpResponse>;
+  /**
+   * Lists todos.
+   */
   list(appId: string): Promise<JsonHttpResponse>;
+  /**
+   * Retrieves a todo by ID.
+   */
   get(appId: string, todoId: string): Promise<JsonHttpResponse>;
+  /**
+   * Updates a todo.
+   */
   update(appId: string, todoId: string, body: unknown): Promise<JsonHttpResponse>;
+  /**
+   * Deletes a todo.
+   */
   delete(appId: string, todoId: string): Promise<JsonHttpResponse>;
 };
 

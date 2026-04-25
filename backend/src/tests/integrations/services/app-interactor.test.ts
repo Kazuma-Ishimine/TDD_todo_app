@@ -7,7 +7,6 @@ import {
 import { createInMemoryStorage } from '../../../infrastructure/in-memory-storage';
 import { createAppInteractor } from '../../../services/app-interactor';
 import type { AppUsecase } from '../../../services/app-usecase';
-import type { TodoRepository } from '../../../repositories/todo-repository';
 import type { TodoEntity } from '../../../models/todo';
 
 const GHOST_ID = '00000000-0000-0000-0000-000000000000';
@@ -177,7 +176,7 @@ describe('AppInteractor integration', () => {
         updatedAt: '2024-01-01T00:00:00.000Z',
         deletedAt: null,
       };
-      await (ctx.todoRepository as TodoRepository).save(todo);
+      await ctx.todoRepository.save(todo);
       await ctx.interactor.delete({ appId: app.id });
       const foundTodo = await ctx.todoRepository.findActiveById(app.id, 'todo-cascade');
       expect(foundTodo).toBeNull();

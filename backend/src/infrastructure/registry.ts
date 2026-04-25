@@ -33,7 +33,7 @@ export function createBackendRegistry() {
 
   return {
     app,
-    clearStorage() {
+    clearStorage: () => {
       storage.clear();
     },
   };

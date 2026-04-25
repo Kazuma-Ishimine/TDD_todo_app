@@ -1,3 +1,6 @@
+/**
+ * Error codes for application errors.
+ */
 export type AppErrorCode =
   | 'VALIDATION_ERROR'
   | 'CONFLICT'
@@ -10,6 +13,9 @@ export type AppErrorCode =
 export class AppError extends Error {
   public readonly code: AppErrorCode;
 
+  /**
+   * Creates an AppError instance with the given error code and message.
+   */
   public constructor(code: AppErrorCode, message: string) {
     super(message);
     this.name = 'AppError';

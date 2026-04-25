@@ -11,35 +11,43 @@ import type { InMemoryStorage } from './in-memory-storage';
 export function createInMemoryAppRepository(
   storage: InMemoryStorage,
 ): AppRepository {
-  async function save(app: AppEntity): Promise<void> {
-    withRepositoryError(() => {
-      storage.apps.set(app.id, cloneApp(app));
-    });
-  }
-
-  async function listActive(): Promise<AppEntity[]> {
-    return withRepositoryError(() =>
-      [...storage.apps.values()]
-        .filter(app => app.deletedAt === null)
-        .map(cloneApp),
+  function save(app: AppEntity): Promise<void> {
+    return Promise.resolve().then(() =>
+      withRepositoryError(() => {
+        storage.apps.set(app.id, cloneApp(app));
+      }),
     );
   }
 
-  async function findActiveById(id: string): Promise<AppEntity | null> {
-    return withRepositoryError(() => {
-      const app = storage.apps.get(id);
-      return app && app.deletedAt === null ? cloneApp(app) : null;
-    });
+  function listActive(): Promise<AppEntity[]> {
+    return Promise.resolve().then(() =>
+      withRepositoryError(() =>
+        [...storage.apps.values()]
+          .filter(app => app.deletedAt === null)
+          .map(cloneApp),
+      ),
+    );
   }
 
-  async function existsActiveByName(
+  function findActiveById(id: string): Promise<AppEntity | null> {
+    return Promise.resolve().then(() =>
+      withRepositoryError(() => {
+        const app = storage.apps.get(id);
+        return app && app.deletedAt === null ? cloneApp(app) : null;
+      }),
+    );
+  }
+
+  function existsActiveByName(
     name: string,
     excludeId?: string,
   ): Promise<boolean> {
-    return withRepositoryError(() =>
-      [...storage.apps.values()].some(
-        app =>
-          app.deletedAt === null && app.name === name && app.id !== excludeId,
+    return Promise.resolve().then(() =>
+      withRepositoryError(() =>
+        [...storage.apps.values()].some(
+          app =>
+            app.deletedAt === null && app.name === name && app.id !== excludeId,
+        ),
       ),
     );
   }
@@ -58,30 +66,36 @@ export function createInMemoryAppRepository(
 export function createInMemoryTodoRepository(
   storage: InMemoryStorage,
 ): TodoRepository {
-  async function save(todo: TodoEntity): Promise<void> {
-    withRepositoryError(() => {
-      storage.todos.set(todo.id, cloneTodo(todo));
-    });
-  }
-
-  async function listActiveByAppId(appId: string): Promise<TodoEntity[]> {
-    return withRepositoryError(() =>
-      [...storage.todos.values()]
-        .filter(todo => todo.appId === appId && todo.deletedAt === null)
-        .map(cloneTodo),
+  function save(todo: TodoEntity): Promise<void> {
+    return Promise.resolve().then(() =>
+      withRepositoryError(() => {
+        storage.todos.set(todo.id, cloneTodo(todo));
+      }),
     );
   }
 
-  async function findActiveById(
+  function listActiveByAppId(appId: string): Promise<TodoEntity[]> {
+    return Promise.resolve().then(() =>
+      withRepositoryError(() =>
+        [...storage.todos.values()]
+          .filter(todo => todo.appId === appId && todo.deletedAt === null)
+          .map(cloneTodo),
+      ),
+    );
+  }
+
+  function findActiveById(
     appId: string,
     todoId: string,
   ): Promise<TodoEntity | null> {
-    return withRepositoryError(() => {
-      const todo = storage.todos.get(todoId);
-      return todo && todo.appId === appId && todo.deletedAt === null
-        ? cloneTodo(todo)
-        : null;
-    });
+    return Promise.resolve().then(() =>
+      withRepositoryError(() => {
+        const todo = storage.todos.get(todoId);
+        return todo && todo.appId === appId && todo.deletedAt === null
+          ? cloneTodo(todo)
+          : null;
+      }),
+    );
   }
 
   return {

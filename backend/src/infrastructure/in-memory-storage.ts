@@ -1,6 +1,9 @@
 import type { AppEntity } from '../models/app';
 import type { TodoEntity } from '../models/todo';
 
+/**
+ * Storage object for in-memory data.
+ */
 export type InMemoryStorage = {
   apps: Map<string, AppEntity>;
   todos: Map<string, TodoEntity>;
