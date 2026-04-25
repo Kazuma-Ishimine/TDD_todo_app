@@ -23,8 +23,9 @@ clear, useful **Japanese technical article**.
 - Save the final article as a Markdown file under `blog/`
 - Prefer practical engineering value over marketing language
 - Decide the theme, reader, and article shape before drafting
-- Keep one article focused on one coherent topic; for error articles, keep one
-  article scoped to one error meaning/root cause
+- Keep one article focused on **one coherent topic** — one agent, one feature, one bug fix, or one architectural decision
+- When the diff or context contains multiple independent topics, **create separate article files for each topic** rather than combining them
+- For error articles, keep one article scoped to one error meaning/root cause
 
 ## 📥 Input
 
@@ -91,6 +92,7 @@ ArticleWriteAgent **MUST** deliver:
 2. Do not stop after drafting article text in the response when the edit tool is available
 3. Only report that file writing was blocked if an actual edit attempt fails with an explicit tool or permission error
 4. If writing fails, include the exact target path and the exact article body that should be saved
+5. **To delete a file**, use the execute tool to run `Remove-Item -Path "<path>" -Force` (Windows) or `rm -f "<path>"` (Linux/Mac). Do not report that deletion is unavailable — use execute and report the result.
 
 ## ✍️ Writing Rules
 
@@ -109,7 +111,8 @@ ArticleWriteAgent **MUST** deliver:
 8. **No secret leakage** - Do not include credentials, tokens, or sensitive
     internal data
 9. **Reader-first depth** - Adjust explanation depth to the intended audience
-10. **One error per article** - If the article is about an error, keep it focused
+10. **One topic per article** — If the work contains multiple independent changes, write a separate article file for each. Do not bundle unrelated topics into one article to keep length manageable
+11. **One error per article** - If the article is about an error, keep it focused
     on one error meaning/root cause unless the user explicitly asks for a
     multi-error comparison
 11. **Use visuals carefully** - If screenshots or diagrams would materially help
@@ -127,22 +130,33 @@ ArticleWriteAgent **MUST** deliver:
 6. ❌ Writing the final article outside the `blog/` folder unless the user explicitly requests another path
 7. ❌ Asking the user for permission or confirmation before writing — proceed autonomously and report what was done
 8. ❌ Returning only the article body without attempting the file edit first when the edit tool is available
+9. ❌ Combining multiple independent topics into one article — always split into separate files
 
 ## 🧠 Thinking Rules
 
 When converting work into an article:
 
-1. Identify the **reader's problem** first
-2. Decide the **theme type** first:
+1. **Decompose topics first** — Before drafting, list every distinct change visible in the diff or context. Each distinct item is a candidate for a separate article:
+   - Creating a new agent / module / component → one article per item
+   - Fixing a bug → one article per root cause
+   - Adding a feature → one article per user-facing capability
+   - Updating a rule file or config → one article per document if the change is substantial
+2. **Decide split vs. combine**: Use one article when changes are tightly coupled (e.g., a refactor that fixes a bug it introduced). Use **separate articles** when:
+   - Each change can be understood independently
+   - The reader benefit differs (different audiences, different problems solved)
+   - A single article would exceed ~1500–2000 words to cover everything adequately
+3. **Write all articles** — When multiple topics are identified, produce a separate `blog/` file for each. List the file names in your final response.
+4. Identify the **reader's problem** first
+5. Decide the **theme type** first:
    - trying a trending technology
    - trying an updated feature
    - solving a technical issue
    - resolving an error
-3. Group related changes into a coherent narrative
-4. Separate **symptom**, **root cause**, and **fix** when applicable
-5. Prefer short examples over long dumps
-6. Highlight decisions that would help another engineer repeat the work
-7. End with practical takeaways, not generic conclusions
+6. Group related changes into a coherent narrative
+7. Separate **symptom**, **root cause**, and **fix** when applicable
+8. Prefer short examples over long dumps
+9. Highlight decisions that would help another engineer repeat the work
+10. End with practical takeaways, not generic conclusions
 
 ## 🧱 Recommended Structure
 
@@ -203,6 +217,7 @@ another format.
 ## ✅ Definition of Done
 
 - Article is written in Japanese unless another language is requested
+- **Each article covers exactly one coherent topic**; if the input contained multiple topics, multiple files exist in `blog/`
 - Main technical changes are covered accurately
 - The chosen theme and target reader are clear
 - Root cause and fix are both explained when the article is problem/error focused
