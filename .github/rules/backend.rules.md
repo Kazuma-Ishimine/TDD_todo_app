@@ -45,6 +45,18 @@ src/
   outside the infrastructure layer. They must be mapped into domain-specific
   error types (e.g., `AppError` or `RepoError`).
 
+### Command Execution Rules
+
+- Use the **bash shell** for command execution.
+- Run commands in the **current working directory** unless a different location is
+  explicitly required.
+- When backend validation is needed, run the commands **inside the `backend`
+  directory**.
+- Execute the following commands when needed:
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run test`
+
 ### Implementation Steps (Thinking Process)
 
 To avoid getting lost during development, the following implementation order is
