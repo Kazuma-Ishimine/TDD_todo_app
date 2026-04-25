@@ -1,9 +1,9 @@
 # Protected paths
 
-Use [`.github/rules/protected-paths.md`](../rules/protected-paths.md) as the
+Use [`.github/rules/protected-paths.rules.md`](../rules/protected-paths.rules.md) as the
 source of truth for protected paths.
 
-- Do not modify files or folders listed in `.github/rules/protected-paths.md`
+- Do not modify files or folders listed in `.github/rules/protected-paths.rules.md`
   unless the user explicitly requests a change to that exact path.
 - Currently protected:
   - `AGENTS.md`
