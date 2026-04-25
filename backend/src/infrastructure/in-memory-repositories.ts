@@ -1,8 +1,8 @@
-import { AppError } from '../../domain/entities/app-error';
-import type { AppEntity } from '../../domain/entities/app';
-import type { TodoEntity } from '../../domain/entities/todo';
-import type { AppRepository } from '../../domain/repositories/app-repository';
-import type { TodoRepository } from '../../domain/repositories/todo-repository';
+import { AppError } from '../models/app-error';
+import type { AppEntity } from '../models/app';
+import type { TodoEntity } from '../models/todo';
+import type { AppRepository } from '../repositories/app-repository';
+import type { TodoRepository } from '../repositories/todo-repository';
 import type { InMemoryStorage } from './in-memory-storage';
 
 /**

@@ -1,4 +1,4 @@
-import type { TodoEntity } from '../entities/todo';
+import type { TodoEntity } from '../models/todo';
 
 export interface TodoRepository {
   save(todo: TodoEntity): Promise<void>;

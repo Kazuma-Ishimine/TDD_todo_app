@@ -1,7 +1,7 @@
 import { Hono, type Context } from 'hono';
-import type { AppController } from '../../interface/controllers/app-controller';
-import type { TodoController } from '../../interface/controllers/todo-controller';
-import type { JsonHttpResponse } from '../../interface/presenters/http-presenter';
+import type { AppController } from '../controllers/app-controller';
+import type { TodoController } from '../controllers/todo-controller';
+import type { JsonHttpResponse } from '../controllers/http-presenter';
 
 type HonoAppDependencies = {
   appController: AppController;
@@ -102,9 +102,7 @@ export function createHonoApp(dependencies: HonoAppDependencies) {
   return app;
 }
 
-async function readRequestBody(
-  context: Context,
-): Promise<unknown> {
+async function readRequestBody(context: Context): Promise<unknown> {
   try {
     return await context.req.json();
   } catch {
@@ -112,9 +110,6 @@ async function readRequestBody(
   }
 }
 
-function toJsonResponse(
-  context: Context,
-  response: JsonHttpResponse,
-) {
+function toJsonResponse(context: Context, response: JsonHttpResponse) {
   return context.json(response.body, response.status);
 }

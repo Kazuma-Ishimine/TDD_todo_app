@@ -1,12 +1,6 @@
-import { AppError } from '../../domain/entities/app-error';
-import type {
-  CreateAppInput,
-  UpdateAppInput,
-} from '../../usecase/input_ports/app-usecase';
-import type {
-  CreateTodoInput,
-  UpdateTodoInput,
-} from '../../usecase/input_ports/todo-usecase';
+import { AppError } from '../models/app-error';
+import type { CreateAppInput, UpdateAppInput } from '../services/app-usecase';
+import type { CreateTodoInput, UpdateTodoInput } from '../services/todo-usecase';
 
 /**
  * Parses and validates the create-app request body.
@@ -79,7 +73,7 @@ function toRecord(value: unknown): Record<string, unknown> {
     return {};
   }
 
-  return value;
+  return value as Record<string, unknown>;
 }
 
 function validateName(value: unknown): string {

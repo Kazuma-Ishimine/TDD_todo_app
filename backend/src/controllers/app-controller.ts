@@ -1,15 +1,12 @@
-import { isAppError } from '../../domain/entities/app-error';
-import type { AppUsecase } from '../../usecase/input_ports/app-usecase';
+import { isAppError } from '../models/app-error';
+import type { AppUsecase } from '../services/app-usecase';
 import {
   presentApp,
   presentError,
   presentSuccess,
   type JsonHttpResponse,
-} from '../presenters/http-presenter';
-import {
-  parseCreateAppInput,
-  parseUpdateAppInput,
-} from './request-validation';
+} from './http-presenter';
+import { parseCreateAppInput, parseUpdateAppInput } from './request-validation';
 
 export type AppController = {
   create(body: unknown): Promise<JsonHttpResponse>;

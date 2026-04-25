@@ -1,4 +1,4 @@
-import type { AppEntity } from '../entities/app';
+import type { AppEntity } from '../models/app';
 
 export interface AppRepository {
   save(app: AppEntity): Promise<void>;

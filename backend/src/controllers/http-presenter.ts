@@ -1,6 +1,6 @@
-import { AppError } from '../../domain/entities/app-error';
-import type { AppEntity } from '../../domain/entities/app';
-import type { TodoEntity } from '../../domain/entities/todo';
+import { AppError } from '../models/app-error';
+import type { AppEntity } from '../models/app';
+import type { TodoEntity } from '../models/todo';
 
 type ErrorBody = {
   code: string;
@@ -47,10 +47,7 @@ export function presentTodo(todo: TodoEntity) {
 /**
  * Builds a successful JSON HTTP response payload.
  */
-export function presentSuccess(
-  data: unknown,
-  status = 200,
-): JsonHttpResponse {
+export function presentSuccess(data: unknown, status = 200): JsonHttpResponse {
   return {
     status,
     body: {

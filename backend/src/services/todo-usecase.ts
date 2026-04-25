@@ -1,30 +1,15 @@
-import type { TodoEntity } from '../../domain/entities/todo';
+import type { TodoEntity } from '../models/todo';
 
-export type CreateTodoInput = {
-  appId: string;
-  title: string;
-};
-
-export type ListTodosInput = {
-  appId: string;
-};
-
-export type GetTodoInput = {
-  appId: string;
-  todoId: string;
-};
-
+export type CreateTodoInput = { appId: string; title: string };
+export type ListTodosInput = { appId: string };
+export type GetTodoInput = { appId: string; todoId: string };
 export type UpdateTodoInput = {
   appId: string;
   todoId: string;
   title?: string;
   completed?: boolean;
 };
-
-export type DeleteTodoInput = {
-  appId: string;
-  todoId: string;
-};
+export type DeleteTodoInput = { appId: string; todoId: string };
 
 export interface TodoUsecase {
   create(input: CreateTodoInput): Promise<TodoEntity>;

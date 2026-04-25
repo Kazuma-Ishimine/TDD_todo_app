@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
-import app, { clearStorage } from './index';
+import app, { clearStorage } from '../../index';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 

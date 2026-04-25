@@ -1,12 +1,12 @@
-import { createAppController } from '../../interface/controllers/app-controller';
-import { createTodoController } from '../../interface/controllers/todo-controller';
+import { createAppController } from '../controllers/app-controller';
+import { createTodoController } from '../controllers/todo-controller';
 import {
   createInMemoryAppRepository,
   createInMemoryTodoRepository,
-} from '../../interface/gateways/in-memory-repositories';
-import { createInMemoryStorage } from '../../interface/gateways/in-memory-storage';
-import { createAppInteractor } from '../../usecase/interactors/app-interactor';
-import { createTodoInteractor } from '../../usecase/interactors/todo-interactor';
+} from './in-memory-repositories';
+import { createInMemoryStorage } from './in-memory-storage';
+import { createAppInteractor } from '../services/app-interactor';
+import { createTodoInteractor } from '../services/todo-interactor';
 import { createHonoApp } from './hono-app';
 
 /**

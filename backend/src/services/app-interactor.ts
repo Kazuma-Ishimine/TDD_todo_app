@@ -1,14 +1,14 @@
-import { AppError } from '../../domain/entities/app-error';
-import type { AppEntity } from '../../domain/entities/app';
-import type { AppRepository } from '../../domain/repositories/app-repository';
-import type { TodoRepository } from '../../domain/repositories/todo-repository';
+import { AppError } from '../models/app-error';
+import type { AppEntity } from '../models/app';
+import type { AppRepository } from '../repositories/app-repository';
+import type { TodoRepository } from '../repositories/todo-repository';
 import type {
   AppUsecase,
   CreateAppInput,
   DeleteAppInput,
   GetAppInput,
   UpdateAppInput,
-} from '../input_ports/app-usecase';
+} from './app-usecase';
 
 type AppInteractorDependencies = {
   appRepository: AppRepository;
@@ -17,9 +17,6 @@ type AppInteractorDependencies = {
   now?: () => string;
 };
 
-/**
- * Creates the app use case interactor and wires its dependencies.
- */
 export function createAppInteractor(
   dependencies: AppInteractorDependencies,
 ): AppUsecase {
@@ -30,18 +27,13 @@ export function createAppInteractor(
 
   async function findExistingApp(appId: string): Promise<AppEntity> {
     const app = await appRepository.findActiveById(appId);
-    if (!app) {
-      throw new AppError('NOT_FOUND', 'App not found');
-    }
+    if (!app) throw new AppError('NOT_FOUND', 'App not found');
     return app;
   }
 
   async function create(input: CreateAppInput): Promise<AppEntity> {
     const duplicated = await appRepository.existsActiveByName(input.name);
-    if (duplicated) {
-      throw new AppError('CONFLICT', 'App name already exists');
-    }
-
+    if (duplicated) throw new AppError('CONFLICT', 'App name already exists');
     const timestamp = now();
     const app: AppEntity = {
       id: generateId(),
@@ -50,7 +42,6 @@ export function createAppInteractor(
       updatedAt: timestamp,
       deletedAt: null,
     };
-
     await appRepository.save(app);
     return app;
   }
@@ -65,23 +56,18 @@ export function createAppInteractor(
 
   async function update(input: UpdateAppInput): Promise<AppEntity> {
     const app = await findExistingApp(input.appId);
-
     if (input.name !== undefined) {
       const duplicated = await appRepository.existsActiveByName(
         input.name,
         app.id,
       );
-      if (duplicated) {
-        throw new AppError('CONFLICT', 'App name already exists');
-      }
+      if (duplicated) throw new AppError('CONFLICT', 'App name already exists');
     }
-
     const updatedApp: AppEntity = {
       ...app,
       name: input.name ?? app.name,
       updatedAt: now(),
     };
-
     await appRepository.save(updatedApp);
     return updatedApp;
   }
@@ -89,29 +75,14 @@ export function createAppInteractor(
   async function remove(input: DeleteAppInput): Promise<AppEntity> {
     const app = await findExistingApp(input.appId);
     const deletedAt = now();
-    const deletedApp: AppEntity = {
-      ...app,
-      deletedAt,
-    };
-
+    const deletedApp: AppEntity = { ...app, deletedAt };
     await appRepository.save(deletedApp);
-
     const todos = await todoRepository.listActiveByAppId(app.id);
     for (const todo of todos) {
-      await todoRepository.save({
-        ...todo,
-        deletedAt,
-      });
+      await todoRepository.save({ ...todo, deletedAt });
     }
-
     return deletedApp;
   }
 
-  return {
-    create,
-    list,
-    get,
-    update,
-    delete: remove,
-  };
+  return { create, list, get, update, delete: remove };
 }

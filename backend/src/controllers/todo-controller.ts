@@ -1,11 +1,11 @@
-import { isAppError } from '../../domain/entities/app-error';
-import type { TodoUsecase } from '../../usecase/input_ports/todo-usecase';
+import { isAppError } from '../models/app-error';
+import type { TodoUsecase } from '../services/todo-usecase';
 import {
   presentError,
   presentSuccess,
   presentTodo,
   type JsonHttpResponse,
-} from '../presenters/http-presenter';
+} from './http-presenter';
 import {
   parseCreateTodoInput,
   parseUpdateTodoInput,
@@ -15,11 +15,7 @@ export type TodoController = {
   create(appId: string, body: unknown): Promise<JsonHttpResponse>;
   list(appId: string): Promise<JsonHttpResponse>;
   get(appId: string, todoId: string): Promise<JsonHttpResponse>;
-  update(
-    appId: string,
-    todoId: string,
-    body: unknown,
-  ): Promise<JsonHttpResponse>;
+  update(appId: string, todoId: string, body: unknown): Promise<JsonHttpResponse>;
   delete(appId: string, todoId: string): Promise<JsonHttpResponse>;
 };
 

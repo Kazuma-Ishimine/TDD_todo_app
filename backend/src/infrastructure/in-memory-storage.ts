@@ -1,5 +1,5 @@
-import type { AppEntity } from '../../domain/entities/app';
-import type { TodoEntity } from '../../domain/entities/todo';
+import type { AppEntity } from '../models/app';
+import type { TodoEntity } from '../models/todo';
 
 export type InMemoryStorage = {
   apps: Map<string, AppEntity>;

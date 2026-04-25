@@ -1,4 +1,4 @@
-import { createBackendRegistry } from './infrastructure/framework/registry';
+import { createBackendRegistry } from './infrastructure/registry';
 
 const registry = createBackendRegistry();
 
