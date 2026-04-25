@@ -118,7 +118,10 @@ npm run test
 - Place unit tests next to the source code
 - Use `.test.ts` suffix
 
-- Integration tests should be placed under `tests/integration`
+- Integration tests should be placed under `tests/integrations/`
+  - HTTP-level integration tests (tests that go through the Hono app) belong in `tests/integrations/infrastructure/`
+  - Each resource should have its own file (e.g., `app.test.ts`, `todo.test.ts`, `index.test.ts`)
+  - Shared test utilities (HTTP helper, factory functions, constants) should be in `tests/integrations/helpers.ts`
 
 ### Test Types
 
