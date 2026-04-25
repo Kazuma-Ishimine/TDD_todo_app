@@ -4,7 +4,7 @@ description:
   ReviewResponseAgent reads review feedback, determines whether each point should
   be fixed in code or answered in comment form, applies safe fixes when
   appropriate, and drafts concise review replies."
-tools: [read, search, write]
+tools: [read, search, write, execute]
 user-invocable: true
 ---
 

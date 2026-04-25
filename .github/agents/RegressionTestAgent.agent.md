@@ -5,7 +5,7 @@ description:
   integration, smoke, contract, and bug-reproduction tests, writes them with the
   existing test stack, executes the relevant validation commands, and reports the
   results clearly."
-tools: [read, search, write]
+tools: [read, search, write, execute]
 user-invocable: true
 ---
 

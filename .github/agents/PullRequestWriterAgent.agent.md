@@ -4,7 +4,7 @@ description:
   and task context. The PullRequestWriterAgent reads diffs, changed files, tests,
   and related docs, then writes a factual PR draft into pull-request/ using the
   repository PR template."
-tools: [read, search, write]
+tools: [read, search, write, execute]
 user-invocable: true
 ---
 

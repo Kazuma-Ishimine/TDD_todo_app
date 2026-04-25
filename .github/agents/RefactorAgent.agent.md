@@ -6,7 +6,7 @@ description:
   deduplication, better naming, structural reorganization, and design
   clarity—without modifying external specifications, API contracts, or test
   expectations. Refactor Agent is a 'non-breaking improvement specialist.'"
-tools: [read, search]
+tools: [read, search, edit, execute]
 user-invocable: false
 ---
 

@@ -4,7 +4,7 @@ description:
   The OpenApiWriterAgent reads route implementations, validators, specs, and
   related backend files, then creates or updates a factual OpenAPI document for
   the current API."
-tools: [read, search, write]
+tools: [read, search, write, execute]
 user-invocable: true
 ---
 
