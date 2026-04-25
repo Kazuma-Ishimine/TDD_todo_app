@@ -112,5 +112,6 @@ async function readRequestBody(context: Context): Promise<unknown> {
 }
 
 function toJsonResponse(context: Context, response: JsonHttpResponse) {
+  // status values are produced by http-presenter which only emits valid HTTP codes
   return context.json(response.body, response.status as ContentfulStatusCode);
 }

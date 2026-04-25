@@ -15,9 +15,10 @@ export class AppError extends Error {
 
   /**
    * Creates an AppError instance with the given error code and message.
+   * Pass `{ cause: err }` as options to preserve the original error for observability.
    */
-  public constructor(code: AppErrorCode, message: string) {
-    super(message);
+  public constructor(code: AppErrorCode, message: string, options?: ErrorOptions) {
+    super(message, options);
     this.name = 'AppError';
     this.code = code;
   }

@@ -1,6 +1,7 @@
 import { createConnection } from 'mysql2/promise';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { RowDataPacket } from 'mysql2';
 
 type MigrationRow = RowDataPacket & { name: string };
@@ -10,6 +11,10 @@ type MigrationRow = RowDataPacket & { name: string };
  */
 async function migrate(): Promise<void> {
   const dbName = process.env.DB_DATABASE ?? 'TDDTodoAppDB';
+
+  if (!/^\w+$/.test(dbName)) {
+    throw new Error(`Invalid DB_DATABASE value: "${dbName}"`);
+  }
 
   const connection = await createConnection({
     host: process.env.DB_HOST ?? '127.0.0.1',
@@ -36,7 +41,7 @@ async function migrate(): Promise<void> {
       ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
     `);
 
-    const migrationsDir = join(process.cwd(), 'migrations');
+    const migrationsDir = fileURLToPath(new URL('../../migrations', import.meta.url));
     const allFiles = await readdir(migrationsDir);
     const sqlFiles = allFiles.filter(f => f.endsWith('.sql')).sort();
 

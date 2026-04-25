@@ -1,10 +1,11 @@
 import { createBackendRegistry } from './infrastructure/registry';
 import { createMysqlBackendRegistry } from './infrastructure/mysql-registry';
+import type { Hono } from 'hono';
 
 const isTest = process.env.NODE_ENV === 'test';
 
 let clearStorageFn: (() => void) | undefined;
-let honoApp: ReturnType<typeof createMysqlBackendRegistry>['app'];
+let honoApp: Hono;
 
 if (isTest) {
   const registry = createBackendRegistry();

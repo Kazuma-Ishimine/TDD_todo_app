@@ -32,17 +32,23 @@ function rowToApp(row: AppRow): AppEntity {
 export function createMysqlAppRepository(pool: MysqlPool): AppRepository {
   async function save(app: AppEntity): Promise<void> {
     try {
-      await pool.execute(
-        `INSERT INTO App (id, name, createdAt, updatedAt, deletedAt)
-         VALUES (?, ?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE
-           name      = VALUES(name),
-           updatedAt = VALUES(updatedAt),
-           deletedAt = VALUES(deletedAt)`,
-        [app.id, app.name, app.createdAt, app.updatedAt, app.deletedAt],
+      const [rows] = await pool.execute<ExistsRow[]>(
+        'SELECT EXISTS(SELECT 1 FROM App WHERE id = ?) AS `exists`',
+        [app.id],
       );
-    } catch {
-      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed');
+      if (rows[0].exists === 1) {
+        await pool.execute(
+          'UPDATE App SET name = ?, updatedAt = ?, deletedAt = ? WHERE id = ?',
+          [app.name, app.updatedAt, app.deletedAt, app.id],
+        );
+      } else {
+        await pool.execute(
+          'INSERT INTO App (id, name, createdAt, updatedAt, deletedAt) VALUES (?, ?, ?, ?, ?)',
+          [app.id, app.name, app.createdAt, app.updatedAt, app.deletedAt],
+        );
+      }
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
     }
   }
 
@@ -52,8 +58,8 @@ export function createMysqlAppRepository(pool: MysqlPool): AppRepository {
         'SELECT id, name, createdAt, updatedAt, deletedAt FROM App WHERE deletedAt IS NULL',
       );
       return rows.map(rowToApp);
-    } catch {
-      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed');
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
     }
   }
 
@@ -65,8 +71,8 @@ export function createMysqlAppRepository(pool: MysqlPool): AppRepository {
       );
       const row = rows[0];
       return row ? rowToApp(row) : null;
-    } catch {
-      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed');
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
     }
   }
 
@@ -84,8 +90,8 @@ export function createMysqlAppRepository(pool: MysqlPool): AppRepository {
         [name],
       );
       return rows[0].exists === 1;
-    } catch {
-      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed');
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
     }
   }
 
