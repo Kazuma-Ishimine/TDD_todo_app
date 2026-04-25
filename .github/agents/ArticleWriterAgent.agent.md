@@ -43,12 +43,73 @@ ArticleWriteAgent receives any combination of:
 
 ## 🔎 Evidence Gathering Rules
 
-Before drafting, gather evidence in this order when the tools are available:
+Before drafting, gather evidence exhaustively in this order when the tools are available.
+The goal is to capture **every distinct change** made in the session so that no article topic is missed.
 
-1. Inspect `git --no-pager status --short` to understand whether worktree changes exist
-2. Read the relevant diff with commands such as `git --no-pager diff --stat`, `git --no-pager diff`, or `git --no-pager show --stat HEAD`
-3. Use changed files, specs, diary entries, review notes, and other repository files to add context
-4. If git metadata cannot be read, explicitly state that the article is based on current file contents and other observable repository context instead
+### Step 1 — Understand the full commit range
+
+```bash
+# See all recent commits (at least 30)
+git --no-pager log --oneline -30
+
+# See all commits made today
+git --no-pager log --oneline --since="$(date +%Y-%m-%d)"
+
+# See all commits made in the current session (typically today)
+git --no-pager log --oneline --since="8 hours ago"
+```
+
+Pick the broadest relevant range (e.g., all commits since the session started) and record the
+oldest and newest commit SHAs as `<base>` and `HEAD`.
+
+### Step 2 — Get the full list of changed files across all commits
+
+```bash
+# All files changed in the range
+git --no-pager diff --name-only <base>^ HEAD
+
+# Summary with line counts
+git --no-pager diff --stat <base>^ HEAD
+```
+
+Read **every file** in this list. Do not skip files — a missed file means a missed article topic.
+
+### Step 3 — Read the full diff
+
+```bash
+# Full unified diff for the entire range
+git --no-pager diff <base>^ HEAD
+```
+
+When the diff is very large, read it commit-by-commit instead:
+
+```bash
+git --no-pager show --stat <sha>   # per commit summary
+git --no-pager show <sha>           # per commit full diff
+```
+
+### Step 4 — Enrich with repository context
+
+- Read spec/design docs under `docs/design/` for any file that changed
+- Read review files under `review/` related to the session
+- Read relevant test files to understand behavioral intent
+- Check `blog/` to avoid duplicating an article already written for the same change
+
+### Step 5 — Identify topics
+
+List every distinct change visible across all commits. Use this as your article candidate list:
+- Each new file or module → candidate article
+- Each bug fix → candidate article (one per root cause)
+- Each config / rule / agent definition change → candidate article if substantial
+- Each refactor that stands alone → candidate article
+
+**Write a separate `blog/` file for every candidate unless two changes are so tightly coupled
+they cannot be understood independently.**
+
+### Step 6 — Fallback
+
+If git metadata cannot be read, explicitly state that the article is based on current file
+contents and other observable repository context instead.
 
 **Example Input:**
 

@@ -60,7 +60,7 @@ WorkSummaryAgent MUST deliver:
 ## Writing rules
 
 1. Facts only - do not invent work that is not supported by the available context
-2. Prefer `git --no-pager status --short` and relevant diffs/logs first when command execution is available
+2. **Gather evidence exhaustively from git before writing** — follow the steps below
 3. Prefer current conversation and repository state over guesswork when git metadata is unavailable or insufficient
 4. Group by requested task, not by low-level file churn
 5. Write in Japanese
@@ -73,6 +73,64 @@ WorkSummaryAgent MUST deliver:
 10. If git metadata cannot be read, say so plainly and name the fallback sources used
 11. Proceed autonomously — do not ask the user for permission or confirmation before writing. Receive the instruction and act immediately.
 12. Returning diary body without attempting the file edit first is incomplete work
+
+## Evidence Gathering Rules
+
+Before drafting, gather evidence exhaustively in this order so that **all work done today is captured**.
+
+### Step 1 — Identify all today's commits
+
+```bash
+# All commits made today
+git --no-pager log --oneline --since="$(date +%Y-%m-%d)"
+
+# All commits in the last 12 hours (covers long sessions)
+git --no-pager log --oneline --since="12 hours ago"
+
+# Broader fallback: last 50 commits
+git --no-pager log --oneline -50
+```
+
+Record the oldest commit SHA from today as `<base>` and the newest as `HEAD`.
+
+### Step 2 — Get all changed files for today
+
+```bash
+# All files changed today
+git --no-pager diff --name-only <base>^ HEAD
+
+# Summary with line counts
+git --no-pager diff --stat <base>^ HEAD
+```
+
+Read **every** changed file path. This is the full work inventory.
+
+### Step 3 — Read each commit individually
+
+For a comprehensive picture, read each commit one by one:
+
+```bash
+git --no-pager show --stat <sha>   # what changed in this commit
+git --no-pager show <sha>           # full diff
+```
+
+This reveals the chronological story of the day's work.
+
+### Step 4 — Enrich with context
+
+- Check `review/` for any review feedback processed today
+- Check `blog/` to reference articles written today
+- Read spec/design docs for any changed area to understand intent
+- Check test results or CI logs if referenced in commits
+
+### Step 5 — Group into work items
+
+From the full picture, group changes into logical work items (feature, bugfix, refactor, config, docs, etc.).
+Each group becomes a section in the diary entry. Do not list raw file changes — describe the **intent and outcome** of each group.
+
+### Step 6 — Fallback
+
+If git commands fail or return no results, use the current session context, changed files list, and any notes provided as the evidence base. State which fallback was used.
 
 ## Definition of done
 
