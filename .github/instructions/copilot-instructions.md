@@ -10,6 +10,17 @@ the source of truth for protected paths.
 - You may read protected files for context, but you must not edit, rename, move,
   or delete them unless the user explicitly asks for it.
 
+# Autonomy
+
+- Do not ask the user for permission or confirmation before starting requested
+  repository work. Receive the instruction and act immediately.
+- Do not pause to ask approval-style questions such as whether to proceed, edit,
+  apply, update, or fix something when the requested change is already clear.
+- If a small assumption is needed, choose a reasonable default and continue.
+- Only ask a question when a missing requirement makes safe or correct
+  implementation impossible; in that case, ask for the missing fact itself, not
+  for permission to proceed.
+
 # Design documents
 
 - Design documents are stored under `docs/design/`.
