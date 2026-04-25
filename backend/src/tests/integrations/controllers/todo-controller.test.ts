@@ -51,7 +51,7 @@ describe('TodoController integration', () => {
 
     it('DTO does not include deletedAt', async () => {
       const res = await ctx.controller.create(appId, { title: 'Todo' });
-      expect((res.body.data as Record<string, unknown>)).not.toHaveProperty('deletedAt');
+      expect(res.body.data).not.toHaveProperty('deletedAt');
     });
 
     it('returns 422 when title is missing', async () => {

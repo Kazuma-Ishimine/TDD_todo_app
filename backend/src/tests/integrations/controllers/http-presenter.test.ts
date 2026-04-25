@@ -35,7 +35,7 @@ describe('HttpPresenter integration', () => {
     it('DTO does not include deletedAt', async () => {
       const { appInteractor } = setup();
       const app = await appInteractor.create({ name: 'No Deleted' });
-      const dto = presentApp(app) as Record<string, unknown>;
+      const dto = presentApp(app);
       expect(dto).not.toHaveProperty('deletedAt');
     });
 
@@ -74,7 +74,7 @@ describe('HttpPresenter integration', () => {
       const { appInteractor, todoInteractor } = setup();
       const app = await appInteractor.create({ name: 'App' });
       const todo = await todoInteractor.create({ appId: app.id, title: 'Todo' });
-      const dto = presentTodo(todo) as Record<string, unknown>;
+      const dto = presentTodo(todo);
       expect(dto).not.toHaveProperty('deletedAt');
     });
 

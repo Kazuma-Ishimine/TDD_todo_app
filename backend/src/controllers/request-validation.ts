@@ -73,6 +73,7 @@ function toRecord(value: unknown): Record<string, unknown> {
     return {};
   }
 
+  // value has been narrowed to a non-null, non-array object by the guards above; cast to Record is safe
   return value as Record<string, unknown>;
 }
 

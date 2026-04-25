@@ -43,7 +43,7 @@ describe('AppController integration', () => {
 
     it('DTO does not include deletedAt', async () => {
       const res = await ctx.controller.create({ name: 'App' });
-      expect((res.body.data as Record<string, unknown>)).not.toHaveProperty('deletedAt');
+      expect(res.body.data).not.toHaveProperty('deletedAt');
     });
 
     it('returns 422 when name is missing', async () => {
