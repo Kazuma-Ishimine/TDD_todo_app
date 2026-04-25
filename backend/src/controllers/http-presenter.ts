@@ -84,5 +84,7 @@ function statusForErrorCode(code: AppError['code']): number {
       return 404;
     case 'REPOSITORY_ERROR':
       return 500;
+    default:
+      return 500;
   }
 }
