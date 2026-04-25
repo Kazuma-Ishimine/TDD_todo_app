@@ -1,9 +1,26 @@
-import { Hono } from 'hono'
+import { createBackendRegistry } from './infrastructure/registry';
+import { createMysqlBackendRegistry } from './infrastructure/mysql-registry';
+import type { Hono } from 'hono';
 
-const app = new Hono()
+const isTest = process.env.NODE_ENV === 'test';
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+let clearStorageFn: (() => void) | undefined;
+let honoApp: Hono;
 
-export default app
+if (isTest) {
+  const registry = createBackendRegistry();
+  honoApp = registry.app;
+  clearStorageFn = registry.clearStorage;
+} else {
+  const registry = createMysqlBackendRegistry();
+  honoApp = registry.app;
+}
+
+/**
+ * Clears the in-memory storage used by the backend during tests.
+ */
+export function clearStorage(): void {
+  clearStorageFn?.();
+}
+
+export default honoApp;

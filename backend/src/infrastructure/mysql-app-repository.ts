@@ -1,0 +1,99 @@
+import type { RowDataPacket } from 'mysql2';
+import { AppError } from '../models/app-error';
+import type { AppEntity } from '../models/app';
+import type { AppRepository } from '../repositories/app-repository';
+import type { MysqlPool } from './mysql-client';
+
+type AppRow = RowDataPacket & {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+};
+
+type ExistsRow = RowDataPacket & {
+  exists: number;
+};
+
+function rowToApp(row: AppRow): AppEntity {
+  return {
+    id: row.id,
+    name: row.name,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+    deletedAt: row.deletedAt ? row.deletedAt.toISOString() : null,
+  };
+}
+
+/**
+ * Creates the MySQL implementation of the app repository port.
+ */
+export function createMysqlAppRepository(pool: MysqlPool): AppRepository {
+  async function save(app: AppEntity): Promise<void> {
+    try {
+      const [rows] = await pool.execute<ExistsRow[]>(
+        'SELECT EXISTS(SELECT 1 FROM App WHERE id = ?) AS `exists`',
+        [app.id],
+      );
+      if (rows[0].exists === 1) {
+        await pool.execute(
+          'UPDATE App SET name = ?, updatedAt = ?, deletedAt = ? WHERE id = ?',
+          [app.name, app.updatedAt, app.deletedAt, app.id],
+        );
+      } else {
+        await pool.execute(
+          'INSERT INTO App (id, name, createdAt, updatedAt, deletedAt) VALUES (?, ?, ?, ?, ?)',
+          [app.id, app.name, app.createdAt, app.updatedAt, app.deletedAt],
+        );
+      }
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
+    }
+  }
+
+  async function listActive(): Promise<AppEntity[]> {
+    try {
+      const [rows] = await pool.execute<AppRow[]>(
+        'SELECT id, name, createdAt, updatedAt, deletedAt FROM App WHERE deletedAt IS NULL',
+      );
+      return rows.map(rowToApp);
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
+    }
+  }
+
+  async function findActiveById(id: string): Promise<AppEntity | null> {
+    try {
+      const [rows] = await pool.execute<AppRow[]>(
+        'SELECT id, name, createdAt, updatedAt, deletedAt FROM App WHERE id = ? AND deletedAt IS NULL',
+        [id],
+      );
+      const row = rows[0];
+      return row ? rowToApp(row) : null;
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
+    }
+  }
+
+  async function existsActiveByName(name: string, excludeId?: string): Promise<boolean> {
+    try {
+      if (excludeId !== undefined) {
+        const [rows] = await pool.execute<ExistsRow[]>(
+          'SELECT EXISTS(SELECT 1 FROM App WHERE name = ? AND deletedAt IS NULL AND id != ?) AS `exists`',
+          [name, excludeId],
+        );
+        return rows[0].exists === 1;
+      }
+      const [rows] = await pool.execute<ExistsRow[]>(
+        'SELECT EXISTS(SELECT 1 FROM App WHERE name = ? AND deletedAt IS NULL) AS `exists`',
+        [name],
+      );
+      return rows[0].exists === 1;
+    } catch (err: unknown) {
+      throw new AppError('REPOSITORY_ERROR', 'Repository operation failed', { cause: err });
+    }
+  }
+
+  return { save, listActive, findActiveById, existsActiveByName };
+}

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import app from './index';
+import { request } from '../helpers';
 
 describe('GET /', () => {
   it('when the root endpoint is requested, then it returns the greeting text', async () => {
-    const response = await app.request('http://localhost/');
+    const response = await request('GET', '/');
 
     expect(response.status).toBe(200);
     await expect(response.text()).resolves.toBe('Hello Hono!');

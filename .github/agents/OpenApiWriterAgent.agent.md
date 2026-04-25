@@ -4,7 +4,7 @@ description:
   The OpenApiWriterAgent reads route implementations, validators, specs, and
   related backend files, then creates or updates a factual OpenAPI document for
   the current API."
-tools: [read, search, write]
+tools: [read, search, write, execute]
 user-invocable: true
 ---
 
@@ -74,6 +74,7 @@ OpenApiWriterAgent MUST deliver:
    missing
 4. Do not overwrite unrelated existing paths without checking whether they still
    belong in the same spec
+5. Do not ask the user for confirmation or permission before proceeding — receive the instruction and act immediately
 
 ## Thinking rules
 
@@ -101,3 +102,16 @@ When producing OpenAPI:
 ```text
 @OpenApiWriterAgent apps エンドポイントの実装に合わせて docs/spec/backend/openapi.yaml を更新して
 ```
+
+## 📚 Governing Rules
+
+Before acting, read the following rule files and apply them throughout all work:
+
+| Rule File | Applies to |
+|---|---|
+| [`.github/rules/principles.rules.md`](../rules/principles.rules.md) | Core engineering principles |
+| [`.github/rules/protected-paths.rules.md`](../rules/protected-paths.rules.md) | Files that must not be modified without explicit user instruction |
+| [`.github/rules/engineering.rules.md`](../rules/engineering.rules.md) | General engineering standards |
+| [`.github/rules/backend.rules.md`](../rules/backend.rules.md) | Backend architecture — primary reference for documenting routes |
+| [`.github/rules/typescript.rules.md`](../rules/typescript.rules.md) | TypeScript coding standards — for reading implementation accurately |
+| [`.github/rules/git.rules.md`](../rules/git.rules.md) | Git workflow rules — reading implementation changes |

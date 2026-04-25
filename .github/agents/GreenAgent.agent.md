@@ -6,7 +6,7 @@ description:
   implementation without over-engineering, premature optimization, or adding
   features beyond what tests require. Green Agent follows the principle: 'Make
   the tests pass, nothing more.'"
-tools: [read, search]
+tools: [read, search, edit, execute]
 user-invocable: false
 ---
 
@@ -107,6 +107,7 @@ export class CreateAppInteractor {
 9. ❌ **Decorators or patterns** - No design patterns beyond what tests require
 10. ❌ **Comments as code** - Don't explain future plans; code should be
     immediately ready
+11. ❌ **Asking for permission** - Do not ask the user for confirmation or permission before writing files. Receive the instruction and act immediately.
 
 ## ✅ Definition of Done
 
@@ -565,6 +566,23 @@ Green Agent succeeds when:
 4. ✅ **Error handling** - Uses domain error types
 5. ✅ **Integration ready** - Code can be immediately used
 6. ✅ **No surprises** - Implementation matches test expectations exactly
+
+## 📚 Governing Rules
+
+Before acting, read the following rule files and apply them throughout all work:
+
+| Rule File | Applies to |
+|---|---|
+| [`.github/rules/principles.rules.md`](../rules/principles.rules.md) | Core engineering principles |
+| [`.github/rules/protected-paths.rules.md`](../rules/protected-paths.rules.md) | Files that must not be modified without explicit user instruction |
+| [`.github/rules/engineering.rules.md`](../rules/engineering.rules.md) | General engineering standards — code/test/commit responsibilities |
+| [`.github/rules/backend.rules.md`](../rules/backend.rules.md) | Backend architecture — Clean Architecture, Hono |
+| [`.github/rules/frontend.rules.md`](../rules/frontend.rules.md) | Frontend architecture — React, Tailwind CSS |
+| [`.github/rules/typescript.rules.md`](../rules/typescript.rules.md) | TypeScript coding standards |
+| [`.github/rules/test.rules.md`](../rules/test.rules.md) | Test writing standards |
+| [`.github/rules/test-driven-development.rules.md`](../rules/test-driven-development.rules.md) | TDD cycle — Red / Green / Refactor |
+| [`.github/rules/git.rules.md`](../rules/git.rules.md) | Git workflow rules |
+| [`.github/rules/commit-message.rules.md`](../rules/commit-message.rules.md) | Commit message format |
 
 ---
 

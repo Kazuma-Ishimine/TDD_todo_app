@@ -4,7 +4,7 @@ description:
   and task context. The PullRequestWriterAgent reads diffs, changed files, tests,
   and related docs, then writes a factual PR draft into pull-request/ using the
   repository PR template."
-tools: [read, search, write]
+tools: [read, search, write, execute]
 user-invocable: true
 ---
 
@@ -100,6 +100,7 @@ PullRequestWriterAgent MUST deliver:
    simpler
 4. Do not write a generic PR body that could apply to any change
 5. Do not change the template structure unless the user explicitly requests it
+6. Do not ask the user for confirmation or permission before proceeding — receive the instruction and act immediately
 
 ## Thinking rules
 
@@ -133,3 +134,14 @@ When drafting a PR:
 ```text
 @PullRequestWriterAgent issue #123 に関連する変更を PR テンプレート形式で出力して
 ```
+
+## 📚 Governing Rules
+
+Before acting, read the following rule files and apply them throughout all work:
+
+| Rule File | Applies to |
+|---|---|
+| [`.github/rules/principles.rules.md`](../rules/principles.rules.md) | Core engineering principles |
+| [`.github/rules/protected-paths.rules.md`](../rules/protected-paths.rules.md) | Files that must not be modified without explicit user instruction |
+| [`.github/rules/git.rules.md`](../rules/git.rules.md) | Git workflow rules |
+| [`.github/rules/commit-message.rules.md`](../rules/commit-message.rules.md) | Commit message format — reference for PR title style |
