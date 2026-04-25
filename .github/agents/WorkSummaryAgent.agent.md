@@ -4,7 +4,7 @@ description:
   context. The WorkSummaryAgent reads relevant changed files and session context,
   then writes an article-like summary into diary/YYYYMMDD.md, appending when the
   file for the same date already exists."
-tools: [read, search, write]
+tools: [read, search, edit, execute]
 user-invocable: true
 ---
 
@@ -49,19 +49,30 @@ WorkSummaryAgent MUST deliver:
 4. Main file paths involved when they are observable
 5. A clear note for incomplete work when applicable
 
+## File writing rules
+
+1. Use the edit tool to write the final result into `diary/YYYYMMDD.md`
+2. If the file already exists, read it first and append a clearly separated new section at the end
+3. Do not stop after drafting text in the response when the edit tool is available
+4. Only report that file writing was blocked if an actual edit attempt fails with an explicit tool or permission error
+5. If writing fails, include the exact target path and the exact text that should be appended
+
 ## Writing rules
 
 1. Facts only - do not invent work that is not supported by the available context
-2. Prefer current conversation and repository state over guesswork
-3. Group by requested task, not by low-level file churn
-4. Write in Japanese
-5. Follow an article-like structure similar to `ArticleWriterAgent`, but adapted
+2. Prefer `git --no-pager status --short` and relevant diffs/logs first when command execution is available
+3. Prefer current conversation and repository state over guesswork when git metadata is unavailable or insufficient
+4. Group by requested task, not by low-level file churn
+5. Write in Japanese
+6. Follow an article-like structure similar to `ArticleWriterAgent`, but adapted
    for a work diary
-6. Use the current date for the file name in `YYYYMMDD.md` format
-7. When appending to an existing same-day file, add a clearly separated new
+7. Use the current date for the file name in `YYYYMMDD.md` format
+8. When appending to an existing same-day file, add a clearly separated new
    section instead of rewriting previous entries
-8. Keep the summary readable and practical rather than overly formal
-9. Proceed autonomously — do not ask the user for permission or confirmation before writing. Receive the instruction and act immediately.
+9. Keep the summary readable and practical rather than overly formal
+10. If git metadata cannot be read, say so plainly and name the fallback sources used
+11. Proceed autonomously — do not ask the user for permission or confirmation before writing. Receive the instruction and act immediately.
+12. Returning diary body without attempting the file edit first is incomplete work
 
 ## Definition of done
 
@@ -70,6 +81,7 @@ WorkSummaryAgent MUST deliver:
 - Existing same-day content is preserved and the new entry is appended
 - Completed and incomplete items are distinguished when possible
 - No unsupported claims are included
+- The file edit has actually been attempted
 
 ## Suggested invocation
 

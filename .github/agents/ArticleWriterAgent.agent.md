@@ -5,7 +5,7 @@ description:
   specs, PR context, and notes, then produces a factual write-up that explains
   what changed, why it mattered, how it was implemented, and saves the article
   into the blog folder."
-tools: [read, search, write]
+tools: ["*"]
 user-invocable: true
 ---
 
@@ -39,6 +39,15 @@ ArticleWriteAgent receives any combination of:
 7. **Length** (optional) - short, standard, deep dive
 8. **Theme Type** (optional) - trending tech, updated feature, technical issue,
    or error resolution
+
+## 🔎 Evidence Gathering Rules
+
+Before drafting, gather evidence in this order when the tools are available:
+
+1. Inspect `git --no-pager status --short` to understand whether worktree changes exist
+2. Read the relevant diff with commands such as `git --no-pager diff --stat`, `git --no-pager diff`, or `git --no-pager show --stat HEAD`
+3. Use changed files, specs, diary entries, review notes, and other repository files to add context
+4. If git metadata cannot be read, explicitly state that the article is based on current file contents and other observable repository context instead
 
 **Example Input:**
 
