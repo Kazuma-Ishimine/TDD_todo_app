@@ -2,7 +2,7 @@
   "name": "backend",
   "scripts": {
     "dev": "tsx --watch src/server.ts",
-    "migrate": "tsx src/infrastructure/migrate.ts",
+    "migrate": "tsx --env-file=.env src/infrastructure/migrate.ts",
     "lint": "eslint .",
     "test": "vitest run --reporter=default --reporter=json --outputFile=test-result.json",
     "test:unit": "vitest run --config vitest.unit.config.ts --reporter=default",
