@@ -1,21 +1,11 @@
-import { test } from '@playwright/test';
-import fs from 'node:fs';
-import path from 'node:path';
+import { test, expect } from '@playwright/test';
 
-// Screenshots are saved to .reg/actual/ for reg-suit visual regression comparison.
-const ACTUAL_DIR = path.join(process.cwd(), '.reg', 'actual');
-
-test.beforeAll(() => {
-  fs.mkdirSync(ACTUAL_DIR, { recursive: true });
-});
-
+// Snapshots are stored under e2e/__snapshots__/ and committed to git.
+// To update baselines: npx playwright test --update-snapshots
 test.describe('@visual', () => {
   test('home page', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await page.screenshot({
-      path: path.join(ACTUAL_DIR, 'home.png'),
-      fullPage: true,
-    });
+    await expect(page).toHaveScreenshot('home.png', { fullPage: true });
   });
 });

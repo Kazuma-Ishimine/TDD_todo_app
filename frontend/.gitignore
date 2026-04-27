@@ -32,6 +32,3 @@ storybook-static
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-
-# reg-suit
-/.reg/

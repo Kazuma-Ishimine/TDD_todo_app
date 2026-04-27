@@ -15,8 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # reg-keygen-git-hash-plugin needs full git history
 
       - uses: actions/setup-node@v4
         with:
@@ -50,26 +48,12 @@ jobs:
       - name: Build Storybook
         run: npm run build-storybook -- --quiet
 
-      # ビジュアルリグレッション：Playwright でスクリーンショット取得 → reg-suit で比較
-      - name: Take visual regression screenshots
+      # ビジュアルリグレッション（Playwright toHaveScreenshot）
+      # スナップショットが存在しない初回は --update-snapshots で生成し、コミット・プッシュする
+      - name: Run visual regression tests
         run: npx playwright test --grep "@visual" --project=chromium
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:4173
-
-      - name: Inject S3 bucket name into regconfig
-        run: |
-          jq --arg bucket "$REG_SUIT_BUCKET_NAME" \
-            '.plugins["reg-publish-s3-plugin"].bucketName = $bucket' \
-            regconfig.json > tmp.json && mv tmp.json regconfig.json
-        env:
-          REG_SUIT_BUCKET_NAME: ${{ secrets.REG_SUIT_BUCKET_NAME }}
-
-      - name: Run reg-suit
-        run: npx reg-suit run
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Playwright report
         if: always()
@@ -79,10 +63,11 @@ jobs:
           path: frontend/playwright-report/
           retention-days: 30
 
-      - name: Upload reg-suit report
-        if: always()
+      # 差分スナップショットをアーティファクトとして保存（テスト失敗時の確認用）
+      - name: Upload snapshot diffs
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: reg-suit-report
-          path: frontend/.reg/
-          retention-days: 30
+          name: snapshot-diffs
+          path: frontend/test-results/
+          retention-days: 7
