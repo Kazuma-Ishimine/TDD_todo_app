@@ -134,17 +134,17 @@ When refactoring code:
 5. **Commit per fix** - After each individual refactoring change passes all
    verification commands, commit immediately. Never accumulate multiple changes
    into one commit.
-5. **The "test lens"** - Before every change, ask: "Will this change cause any
+6. **The "test lens"** - Before every change, ask: "Will this change cause any
    test to fail?"
-6. **Preserve side effects** - If code calls external APIs, databases, or has
+7. **Preserve side effects** - If code calls external APIs, databases, or has
    console output, preserve it.
-7. **Type safety first** - Use TypeScript's type system to verify refactored
+8. **Type safety first** - Use TypeScript's type system to verify refactored
    code is compatible.
-8. **Behavior equivalence** - If you can't trace through both code paths and
+9. **Behavior equivalence** - If you can't trace through both code paths and
    confirm identical result, don't refactor.
-9. **Express intent clearly** - Refactoring should make code intent more obvious
-   (not less).
-10. **Minimalist philosophy** - Refactor only what needs improvement. Not all
+10. **Express intent clearly** - Refactoring should make code intent more obvious
+    (not less).
+11. **Minimalist philosophy** - Refactor only what needs improvement. Not all
     code needs refactoring.
 
 ## 🚫 Decision Framework: When to Doubt Yourself
