@@ -24,8 +24,8 @@ UIDesignAgent receives one or more of:
 1. **Component path** – e.g. `frontend/src/features/todo/TodoItem.tsx`
 2. **Design reference** – description, screenshot reference, or design doc
    under `docs/design/`
-3. **Scope keyword** – e.g. `"全体の余白を整えて"`, `"カードコンポーネントを見やすく"`,
-   `"モバイル対応して"`
+3. **Scope keyword** – e.g. `"adjust global spacing"`, `"improve card component readability"`,
+   `"make mobile-friendly"`
 
 If no explicit scope is given, audit the entire `frontend/src` directory for
 inconsistencies and apply improvements across all components.
@@ -246,14 +246,14 @@ UIDesignAgent task is complete when:
 - After all edits, run validation commands with the execute tool.
 - Do not end the task without confirming files have been written.
 
-## 🔚 完了後の必須ステップ
+## 🔚 Post-Completion Required Steps
 
-すべての作業が完了したら、必ず以下の2つのエージェントを順番に呼び出すこと:
+When all work is complete, you MUST call the following agents in order:
 
-1. `@ArticleWriterAgent` — 今回の変更内容を技術記事として `blog/` に保存する
-2. `@WorkSummaryAgent` — 今回の作業内容を日記エントリとして `diary/YYYYMMDD.md` に保存する
+1. `@ArticleWriterAgent` — Save the changes as a technical article under `blog/`
+2. `@WorkSummaryAgent` — Save the work as a diary entry to `diary/YYYYMMDD.md`
 
-これらの呼び出しは省略不可。Definition of Done を満たす条件に含まれる。
+These calls are mandatory and are included as part of the Definition of Done.
 
 ## 📚 Governing Rules
 

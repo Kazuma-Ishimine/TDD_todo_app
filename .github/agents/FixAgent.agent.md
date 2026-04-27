@@ -394,14 +394,14 @@ Remember: **Targeted fix > perfect code**. A surgical fix that solves exactly
 the reported problem is always better than a rewrite that might introduce new
 problems.
 
-## 🔚 完了後の必須ステップ
+## 🔚 Post-Completion Required Steps
 
-すべての作業が完了したら、必ず以下の2つのエージェントを順番に呼び出すこと:
+When all work is complete, you MUST call the following agents in order:
 
-1. `@ArticleWriterAgent` — 今回の変更内容を技術記事として `blog/` に保存する
-2. `@WorkSummaryAgent` — 今回の作業内容を日記エントリとして `diary/YYYYMMDD.md` に保存する
+1. `@ArticleWriterAgent` — Save the changes as a technical article under `blog/`
+2. `@WorkSummaryAgent` — Save the work as a diary entry to `diary/YYYYMMDD.md`
 
-これらの呼び出しは省略不可。Definition of Done を満たす条件に含まれる。
+These calls are mandatory and are included as part of the Definition of Done.
 
 ## 📚 Governing Rules
 
@@ -422,4 +422,4 @@ Before acting, read the following rule files and apply them throughout all work:
 
 ---
 
-**Last Updated**: 2026年4月27日 **Version**: 1.0.0 Fix Agent Specification
+**Last Updated**: April 27, 2026 **Version**: 1.0.0 Fix Agent Specification

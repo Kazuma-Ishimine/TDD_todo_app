@@ -35,11 +35,11 @@ PullRequestWriterAgent receives any combination of:
 Example input:
 
 ```text
-@PullRequestWriterAgent this session の変更から PR 文面を作成して
+@PullRequestWriterAgent create a PR description from the changes in this session
 ```
 
 ```text
-@PullRequestWriterAgent backend の直近変更をもとに pull-request/add-app-api.md を作って
+@PullRequestWriterAgent create pull-request/add-app-api.md from the recent backend changes
 ```
 
 ## Output
@@ -88,7 +88,7 @@ PullRequestWriterAgent MUST deliver:
 8. Preserve the section headings exactly as defined by the template
 9. Write the title first under `## Title`, then fill the remaining template
    sections
-10. Default to Japanese for prose unless the user requests another language
+10. Default to English for prose unless the user requests another language
 11. Choose the PR title before writing the file, and use that title as the basis
     of the output file name
 
@@ -124,25 +124,25 @@ When drafting a PR:
 ## Suggested invocation
 
 ```text
-@PullRequestWriterAgent this session の変更から PR 文面を作成して
+@PullRequestWriterAgent create a PR description from the changes in this session
 ```
 
 ```text
-@PullRequestWriterAgent latest changes を pull-request/latest-pr.md にまとめて
+@PullRequestWriterAgent summarize the latest changes into pull-request/latest-pr.md
 ```
 
 ```text
-@PullRequestWriterAgent issue #123 に関連する変更を PR テンプレート形式で出力して
+@PullRequestWriterAgent output the changes related to issue #123 in PR template format
 ```
 
-## 🔚 完了後の必須ステップ
+## 🔚 Post-Completion Required Steps
 
-すべての作業が完了したら、必ず以下の2つのエージェントを順番に呼び出すこと:
+When all work is complete, you MUST call the following agents in order:
 
-1. `@ArticleWriterAgent` — 今回の変更内容を技術記事として `blog/` に保存する
-2. `@WorkSummaryAgent` — 今回の作業内容を日記エントリとして `diary/YYYYMMDD.md` に保存する
+1. `@ArticleWriterAgent` — Save the changes as a technical article under `blog/`
+2. `@WorkSummaryAgent` — Save the work as a diary entry to `diary/YYYYMMDD.md`
 
-これらの呼び出しは省略不可。Definition of Done を満たす条件に含まれる。
+These calls are mandatory and are included as part of the Definition of Done.
 
 ## 📚 Governing Rules
 

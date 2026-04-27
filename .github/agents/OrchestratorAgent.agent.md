@@ -197,14 +197,14 @@ Orchestrator Agent delivers:
 - ❌ Skip review
 - ❌ Compensate for a failing sub-agent by doing the work yourself
 
-## 🔚 完了後の必須ステップ
+## 🔚 Post-Completion Required Steps
 
-すべての作業が完了したら、必ず以下の2つのエージェントを順番に呼び出すこと（Phase 7・Phase 8 として組み込み済み）:
+These are already built into Phase 7 and Phase 8 of the workflow:
 
-1. `@ArticleWriterAgent` — 今回の変更内容を技術記事として `blog/` に保存する
-2. `@WorkSummaryAgent` — 今回の作業内容を日記エントリとして `diary/YYYYMMDD.md` に保存する
+1. `@ArticleWriterAgent` — Save the changes as a technical article under `blog/`
+2. `@WorkSummaryAgent` — Save the work as a diary entry to `diary/YYYYMMDD.md`
 
-これらの呼び出しは省略不可。Definition of Done を満たす条件に含まれる。
+These calls are mandatory and are included as part of the Definition of Done.
 
 ## 📚 Governing Rules
 
@@ -226,5 +226,5 @@ Before acting, read the following rule files and apply them throughout all work:
 
 ---
 
-**Last Updated**: 2026年4月25日 **Version**: 2.1.0 Orchestrator Agent
+**Last Updated**: April 25, 2026 **Version**: 2.1.0 Orchestrator Agent
 Specification
