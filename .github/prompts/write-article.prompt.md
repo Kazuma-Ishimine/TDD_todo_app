@@ -1,11 +1,11 @@
 ---
-description: Write a technical article from repository changes and save it under blog/
+description: Write a Japanese technical article from repository changes and save it under blog/
 name: write-article
 argument-hint: Describe the target changes, audience, format, tone, or commit/PR range
 agent: ArticleWriterAgent
 ---
 
-Write a technical article based on the relevant changes in this repository.
+Write a Japanese technical article based on the relevant changes in this repository.
 
 Additional request from the user:
 ${input:Describe the target changes, audience, format, tone, or commit/PR range}
@@ -20,6 +20,6 @@ Instructions:
 
 Output expectations:
 
-- English technical writing
+- Japanese technical writing
 - Clear explanation of background, changes, implementation details, and key learnings
 - Minimal filler and no unsupported claims

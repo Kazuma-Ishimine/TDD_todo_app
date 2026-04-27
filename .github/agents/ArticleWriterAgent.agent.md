@@ -134,7 +134,7 @@ ArticleWriteAgent **MUST** deliver:
 6. **Optional code snippets** only when they improve understanding
 7. **A Markdown file written into `blog/`**
 
-**Default Output Language**: English
+**Default Output Language**: Japanese
 
 ## 📁 Output Location Rules
 
@@ -277,7 +277,7 @@ another format.
 
 ## ✅ Definition of Done
 
-- Article is written in English unless another language is requested
+- Article is written in Japanese unless another language is requested
 - **Each article covers exactly one coherent topic**; if the input contained multiple topics, multiple files exist in `blog/`
 - Main technical changes are covered accurately
 - The chosen theme and target reader are clear

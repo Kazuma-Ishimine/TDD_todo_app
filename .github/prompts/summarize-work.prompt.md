@@ -27,7 +27,7 @@ Instructions:
 
 Output format:
 
-- Respond in English
+- Respond in Japanese
 - Use a concise bullet list
 - Prefer task-oriented summaries over chronological chatter
 - Do not write any files unless the user explicitly asks

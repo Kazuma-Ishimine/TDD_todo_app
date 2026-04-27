@@ -63,7 +63,7 @@ WorkSummaryAgent MUST deliver:
 2. **Gather evidence exhaustively from git before writing** — follow the steps below
 3. Prefer current conversation and repository state over guesswork when git metadata is unavailable or insufficient
 4. Group by requested task, not by low-level file churn
-5. Write in English
+5. Write in Japanese
 6. Follow an article-like structure similar to `ArticleWriterAgent`, but adapted
    for a work diary
 7. Use the current date for the file name in `YYYYMMDD.md` format
@@ -134,7 +134,7 @@ If git commands fail or return no results, use the current session context, chan
 
 ## Definition of done
 
-- A diary entry is written in English
+- A diary entry is written in Japanese
 - The file path is `diary/YYYYMMDD.md`
 - Existing same-day content is preserved and the new entry is appended
 - Completed and incomplete items are distinguished when possible
