@@ -15,7 +15,12 @@ Useful? React with 👍 / 👎.
 
 **Disposition:** Fixed — `frontend/src/api/client.ts`
 
-`customFetch` now parses the response body for all HTTP status codes (JSON with text fallback) and returns `{ data, status, headers }` matching the orval-generated envelope types. The `response.ok` guard and throw were removed because the generated types include 4xx/5xx as typed response variants, not thrown errors. Verified with `tsc -b` (typecheck) and ESLint — both pass. Committed in `fd613a6`.
+`customFetch` now parses the response body for all HTTP status codes (JSON with
+text fallback) and returns `{ data, status, headers }` matching the
+orval-generated envelope types. The `response.ok` guard and throw were removed
+because the generated types include 4xx/5xx as typed response variants, not
+thrown errors. Verified with `tsc -b` (typecheck) and ESLint — both pass.
+Committed in `fd613a6`.
 
 ---
 
@@ -31,8 +36,65 @@ snapshot is committed.
 
 Useful? React with 👍 / 👎.
 
-**Disposition:** Reply only — `frontend/e2e/visual.spec.ts` + `.github/workflows/ci-nightly.yml`
+**Disposition:** Reply only — `frontend/e2e/visual.spec.ts` +
+`.github/workflows/ci-nightly.yml`
 
-Visual baselines are platform-specific; a snapshot generated on macOS or Windows will not match pixels rendered on ubuntu-latest (the CI runner). The correct process is: run `npx playwright test --grep "@visual" --update-snapshots` on an ubuntu-latest machine (or inside a Docker container matching the CI image), then commit the generated `frontend/e2e/__snapshots__/` files. Adding `--update-snapshots` unconditionally to the CI step is unsafe — it would silently regenerate the baseline on every nightly run and never catch regressions. The comment already in `ci-nightly.yml` documents the correct one-time bootstrap flow. Action required by maintainer: generate the baseline on Linux and commit it before the nightly run is expected to pass.
+Visual baselines are platform-specific; a snapshot generated on macOS or Windows
+will not match pixels rendered on ubuntu-latest (the CI runner). The correct
+process is: run `npx playwright test --grep "@visual" --update-snapshots` on an
+ubuntu-latest machine (or inside a Docker container matching the CI image), then
+commit the generated `frontend/e2e/__snapshots__/` files. Adding
+`--update-snapshots` unconditionally to the CI step is unsafe — it would
+silently regenerate the baseline on every nightly run and never catch
+regressions. The comment already in `ci-nightly.yml` documents the correct
+one-time bootstrap flow. Action required by maintainer: generate the baseline on
+Linux and commit it before the nightly run is expected to pass.
 
 ---
+
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>
+Build app before running Playwright smoke tests**
+
+In `.github/workflows/ci-pr.yml` the smoke step runs `npx playwright test`, and
+the Playwright config for this repo (`frontend/playwright.config.ts`) always
+starts `webServer` with `npm run preview`. Vite’s CLI docs state `vite preview`
+serves the build output directory and should be preceded by `vite build`; this
+workflow never runs `npm run build`, so on a clean CI runner `dist` is missing
+and Playwright fails before any `@smoke` test executes.
+
+Useful? React with 👍 / 👎.
+
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>
+Avoid starting preview server twice in nightly workflow**
+
+This job pre-starts `npm run preview` and then runs Playwright, but the repo’s
+Playwright config also launches its own `webServer` and sets
+`reuseExistingServer` to `!process.env.CI` (false in CI). Playwright’s
+documented behavior is to throw when the target URL is already occupied and
+`reuseExistingServer` is false, so this prestarted server makes the Playwright
+steps fail before tests run.
+
+Useful? React with 👍 / 👎.
+
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>
+Commit a baseline for the new visual screenshot assertion**
+
+The new visual test asserts `toHaveScreenshot('home.png')`, but this commit does
+not include any snapshot baseline files (repo-wide check of `frontend/e2e` at
+this commit contains only `example.spec.ts` and `visual.spec.ts`). Playwright’s
+snapshot behavior is to fail when the expected image is missing unless
+`--update-snapshots` is used, so the nightly visual-regression step will fail
+consistently.
+
+Useful? React with 👍 / 👎.
+
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>
+Return HTTP metadata in customFetch to match generated types**
+
+The generated Orval client types in this commit expect responses shaped with
+`status` and `headers` (e.g. `postApiV1AppsResponse`), but `customFetch` returns
+only `response.json()`. That creates a runtime/type contract mismatch: consumers
+of generated hooks can read `result.status`/`result.headers` as typed fields but
+will receive `undefined`, making response-branching logic unreliable.
+
+Useful? React with 👍 / 👎.
