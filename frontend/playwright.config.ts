@@ -79,11 +79,11 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests.
-   * In CI, the server is started by the workflow before Playwright runs.
-   * reuseExistingServer: true locally (reuse running dev server),
-   * false in CI (always start fresh). */
+   * Always builds first so vite preview has a dist/ to serve.
+   * reuseExistingServer: true locally (reuse running dev server if already up),
+   * false in CI (always start fresh after the workflow build step). */
   webServer: {
-    command: 'npm run preview',
+    command: 'npm run build && npm run preview',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,
   },
