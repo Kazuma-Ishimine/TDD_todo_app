@@ -1,6 +1,8 @@
+import { z } from 'zod';
 import { AppError, isAppError } from '../models/app-error';
 import type { AppEntity } from '../models/app';
 import type { TodoEntity } from '../models/todo';
+import { AppDtoSchema, TodoDtoSchema } from './schemas';
 
 type ErrorBody = {
   code: string;
@@ -27,24 +29,12 @@ export type JsonHttpResponse = {
 /**
  * DTO for an App resource returned in API responses.
  */
-export type AppDto = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-};
+export type AppDto = z.infer<typeof AppDtoSchema>;
 
 /**
  * DTO for a Todo resource returned in API responses.
  */
-export type TodoDto = {
-  id: string;
-  appId: string;
-  title: string;
-  completed: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
+export type TodoDto = z.infer<typeof TodoDtoSchema>;
 
 /**
  * Converts an app entity into the API response DTO.

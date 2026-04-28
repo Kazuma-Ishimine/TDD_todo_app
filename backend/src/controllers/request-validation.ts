@@ -1,118 +1,52 @@
 import { AppError } from '../models/app-error';
 import type { CreateAppInput, UpdateAppInput } from '../services/app-usecase';
 import type { CreateTodoInput, UpdateTodoInput } from '../services/todo-usecase';
+import {
+  CreateAppRequestSchema,
+  UpdateAppRequestSchema,
+  CreateTodoRequestSchema,
+  UpdateTodoRequestSchema,
+} from './schemas';
+
+function toValidationError(issues: { message: string }[]): AppError {
+  return new AppError(
+    'VALIDATION_ERROR',
+    issues[0]?.message ?? 'Invalid request body',
+  );
+}
 
 /**
  * Parses and validates the create-app request body.
  */
 export function parseCreateAppInput(body: unknown): CreateAppInput {
-  const payload = toRecord(body);
-  return {
-    name: validateName(payload.name),
-  };
+  const result = CreateAppRequestSchema.safeParse(body);
+  if (!result.success) throw toValidationError(result.error.issues);
+  return result.data;
 }
 
 /**
  * Parses and validates the update-app request body.
  */
-export function parseUpdateAppInput(
-  appId: string,
-  body: unknown,
-): UpdateAppInput {
-  const payload = toRecord(body);
-  const input: UpdateAppInput = { appId };
-
-  if (payload.name !== undefined) {
-    input.name = validateName(payload.name);
-  }
-
-  return input;
+export function parseUpdateAppInput(appId: string, body: unknown): UpdateAppInput {
+  const result = UpdateAppRequestSchema.safeParse(body ?? {});
+  if (!result.success) throw toValidationError(result.error.issues);
+  return { appId, ...result.data };
 }
 
 /**
  * Parses and validates the create-todo request body.
  */
-export function parseCreateTodoInput(
-  appId: string,
-  body: unknown,
-): CreateTodoInput {
-  const payload = toRecord(body);
-  return {
-    appId,
-    title: validateTitle(payload.title),
-  };
+export function parseCreateTodoInput(appId: string, body: unknown): CreateTodoInput {
+  const result = CreateTodoRequestSchema.safeParse(body);
+  if (!result.success) throw toValidationError(result.error.issues);
+  return { appId, ...result.data };
 }
 
 /**
  * Parses and validates the update-todo request body.
  */
-export function parseUpdateTodoInput(
-  appId: string,
-  todoId: string,
-  body: unknown,
-): UpdateTodoInput {
-  const payload = toRecord(body);
-  const input: UpdateTodoInput = { appId, todoId };
-
-  if (payload.title !== undefined) {
-    input.title = validateTitle(payload.title);
-  }
-
-  if (payload.completed !== undefined) {
-    if (typeof payload.completed !== 'boolean') {
-      throw new AppError('VALIDATION_ERROR', 'completed must be a boolean');
-    }
-    input.completed = payload.completed;
-  }
-
-  return input;
-}
-
-function toRecord(value: unknown): Record<string, unknown> {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-    return {};
-  }
-
-  // value has been narrowed to a non-null, non-array object by the guards above; cast to Record is safe
-  return value as Record<string, unknown>;
-}
-
-function validateName(value: unknown): string {
-  if (typeof value !== 'string') {
-    throw new AppError('VALIDATION_ERROR', 'name is required');
-  }
-
-  const trimmed = value.trim();
-  if (trimmed.length === 0) {
-    throw new AppError('VALIDATION_ERROR', 'name must not be empty');
-  }
-
-  if (trimmed.length > 100) {
-    throw new AppError(
-      'VALIDATION_ERROR',
-      'name must be at most 100 characters',
-    );
-  }
-
-  return trimmed;
-}
-
-function validateTitle(value: unknown): string {
-  if (typeof value !== 'string') {
-    throw new AppError('VALIDATION_ERROR', 'title is required');
-  }
-
-  const trimmed = value.trim();
-  if (trimmed.length === 0) {
-    throw new AppError('VALIDATION_ERROR', 'title must not be empty');
-  }
-
-  if (trimmed.length > 200) {
-    throw new AppError(
-      'VALIDATION_ERROR',
-      'title must be at most 200 characters',
-    );
-  }
-
-  return trimmed;
+export function parseUpdateTodoInput(appId: string, todoId: string, body: unknown): UpdateTodoInput {
+  const result = UpdateTodoRequestSchema.safeParse(body ?? {});
+  if (!result.success) throw toValidationError(result.error.issues);
+  return { appId, todoId, ...result.data };
 }

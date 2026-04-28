@@ -19,11 +19,11 @@ cd TDDTodoApp
 
 # Backend
 cd backend
-npm install
+npm ci
 
 # Frontend
 cd ../frontend
-npm install
+npm ci
 ```
 
 ## Run the application
