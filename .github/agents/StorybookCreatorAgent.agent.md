@@ -6,7 +6,7 @@ description:
   happy paths, error states, loading states, and edge cases. It integrates with MSW
   for API mocking and Tailwind styling, outputs CSF 3.0 stories, and ensures
   Storybook builds successfully."
-tools: [read, search, edit, execute, agent]
+tools: [read, search, edit, execute, agent, git]
 user-invocable: true
 ---
 
@@ -71,6 +71,24 @@ StorybookCreatorAgent **MUST** deliver:
 9. **Consistent naming** — Story title follows pattern `"Features/ComponentName"` or
    `"Pages/PageName"`
 10. **Storybook validation** — Run `npm run build-storybook` before reporting done
+
+## 📝 Git Commit Authority
+
+StorybookCreatorAgent **HAS permission to commit** changes to git. When story files are generated successfully:
+
+1. **Stage all new story files**: `git add frontend/src/features/**/*.stories.tsx`
+2. **Stage any documentation files**: `git add STORYBOOK_*.md`
+3. **Create a commit** with message format: `feat: add Storybook stories for [component names]`
+4. **Include Co-authored-by trailer**: 
+   ```
+   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+   ```
+
+The commit should include:
+- All `.stories.tsx` files created/modified
+- Any generated documentation (STORYBOOK_*.md files)
+- Clear commit message indicating which components received stories
+- Proper trailer attribution
 
 ## ❌ Prohibited Actions
 
