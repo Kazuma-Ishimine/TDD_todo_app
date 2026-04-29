@@ -39,11 +39,18 @@ export function TodoForm({ mode, todo, appId, onCancel, onSuccess }: Props) {
 
   const onSubmit = async (values: FormValues) => {
     if (mode === 'edit' && todo) {
-      await updateMutation.mutateAsync({ appId, todoId: todo.id, data: { title: values.title } })
+      const result = await updateMutation.mutateAsync({ appId, todoId: todo.id, data: { title: values.title } }) as unknown
+      const typedResult = result as { status?: number }
+      if (typedResult?.status && typedResult.status >= 200 && typedResult.status < 300) {
+        onSuccess()
+      }
     } else {
-      await createMutation.mutateAsync({ appId, data: { title: values.title } })
+      const result = await createMutation.mutateAsync({ appId, data: { title: values.title } }) as unknown
+      const typedResult = result as { status?: number }
+      if (typedResult?.status && typedResult.status >= 200 && typedResult.status < 300) {
+        onSuccess()
+      }
     }
-    onSuccess()
   }
 
   const handleFormSubmit = (values: FormValues) => {

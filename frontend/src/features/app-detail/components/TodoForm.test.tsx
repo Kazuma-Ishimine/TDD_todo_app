@@ -460,4 +460,112 @@ describe('TodoForm - create mode', () => {
       )
     })
   })
+
+  describe('Error Cases - Failed PUT (4xx/5xx)', () => {
+    it('when PUT returns 422 (validation error), then onSuccess is NOT called', async () => {
+      // Arrange
+      const user = userEvent.setup()
+      const onSuccess = vi.fn()
+      server.use(
+        http.put('/api/v1/apps/app-1/todos/todo-1', () =>
+          HttpResponse.json(
+            {
+              success: false,
+              data: null,
+              error: { code: 'VALIDATION_ERROR' },
+            },
+            { status: 422 },
+          ),
+        ),
+      )
+      renderWithProviders(
+        <TodoForm
+          mode="edit"
+          todo={mockTodo}
+          appId="app-1"
+          onCancel={vi.fn()}
+          onSuccess={onSuccess}
+        />,
+      )
+
+      // Act
+      await user.clear(screen.getByRole('textbox', { name: /title/i }))
+      await user.type(screen.getByRole('textbox', { name: /title/i }), 'Updated Todo')
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      // Assert
+      await new Promise(resolve => setTimeout(resolve, 100))
+      expect(onSuccess).not.toHaveBeenCalled()
+    })
+
+    it('when POST returns 409 (conflict), then onSuccess is NOT called', async () => {
+      // Arrange
+      const user = userEvent.setup()
+      const onSuccess = vi.fn()
+      server.use(
+        http.post('/api/v1/apps/app-1/todos', () =>
+          HttpResponse.json(
+            {
+              success: false,
+              data: null,
+              error: { code: 'CONFLICT' },
+            },
+            { status: 409 },
+          ),
+        ),
+      )
+      renderWithProviders(
+        <TodoForm
+          mode="create"
+          appId="app-1"
+          onCancel={vi.fn()}
+          onSuccess={onSuccess}
+        />,
+      )
+
+      // Act
+      await user.type(screen.getByRole('textbox', { name: /title/i }), 'Brand New Todo')
+      await user.click(screen.getByRole('button', { name: /save|create/i }))
+
+      // Assert
+      await new Promise(resolve => setTimeout(resolve, 100))
+      expect(onSuccess).not.toHaveBeenCalled()
+    })
+
+    it('when PUT returns 500, then onSuccess is NOT called', async () => {
+      // Arrange
+      const user = userEvent.setup()
+      const onSuccess = vi.fn()
+      server.use(
+        http.put('/api/v1/apps/app-1/todos/todo-1', () =>
+          HttpResponse.json(
+            {
+              success: false,
+              data: null,
+              error: { code: 'SERVER_ERROR' },
+            },
+            { status: 500 },
+          ),
+        ),
+      )
+      renderWithProviders(
+        <TodoForm
+          mode="edit"
+          todo={mockTodo}
+          appId="app-1"
+          onCancel={vi.fn()}
+          onSuccess={onSuccess}
+        />,
+      )
+
+      // Act
+      await user.clear(screen.getByRole('textbox', { name: /title/i }))
+      await user.type(screen.getByRole('textbox', { name: /title/i }), 'Updated Todo')
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      // Assert
+      await new Promise(resolve => setTimeout(resolve, 100))
+      expect(onSuccess).not.toHaveBeenCalled()
+    })
+  })
 })
