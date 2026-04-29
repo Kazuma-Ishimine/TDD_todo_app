@@ -8,7 +8,7 @@ import { AppList } from '../components/AppList'
  * Page displaying all apps.
  */
 export function AppListPage() {
-  const { data, isLoading } = useGetApiV1Apps()
+  const { data, isLoading, isError } = useGetApiV1Apps()
   const { currentPage, goToAppCreate } = useNavigation()
 
   if (currentPage.name !== 'app-list') return null
@@ -16,7 +16,7 @@ export function AppListPage() {
   const responseData = data as unknown
   const typedData = responseData as { data?: { data?: unknown; success?: boolean } } | null
   const apps = typedData?.data?.data ?? []
-  const isError = typedData?.data?.success === false
+  const responseError = typedData?.data?.success === false
 
   return (
     <div className="max-w-2xl mx-auto p-6">
@@ -36,13 +36,13 @@ export function AppListPage() {
         </div>
       )}
 
-      {isError && (
+      {(isError || responseError) && (
         <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded text-red-700">
           Failed to load apps. Please try again.
         </div>
       )}
 
-      {!isLoading && !isError && <AppList apps={(apps ?? []) as GetApiV1Apps200DataItem[]} />}
+      {!isLoading && !isError && !responseError && <AppList apps={(apps ?? []) as GetApiV1Apps200DataItem[]} />}
     </div>
   )
 }

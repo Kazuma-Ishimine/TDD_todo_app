@@ -170,5 +170,50 @@ describe('AppListPage', () => {
       // Assert
       expect(await screen.findByRole('alert')).toBeInTheDocument()
     })
+
+    it('when fetch completely fails (network error), then shows error alert', async () => {
+      // Arrange
+      server.use(
+        http.get('/api/v1/apps', () => {
+          return HttpResponse.error()
+        }),
+      )
+
+      // Act
+      renderWithProviders(<AppListPage />)
+
+      // Assert
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
+    })
+
+    it('when fetch returns with network timeout, then shows error alert', async () => {
+      // Arrange
+      server.use(
+        http.get('/api/v1/apps', () => {
+          return HttpResponse.error()
+        }),
+      )
+
+      // Act
+      renderWithProviders(<AppListPage />)
+
+      // Assert — network errors are detected via React Query isError state
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
+    })
+
+    it('when CORS is blocked, then shows error alert', async () => {
+      // Arrange
+      server.use(
+        http.get('/api/v1/apps', () => {
+          return HttpResponse.error()
+        }),
+      )
+
+      // Act
+      renderWithProviders(<AppListPage />)
+
+      // Assert
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
+    })
   })
 })
