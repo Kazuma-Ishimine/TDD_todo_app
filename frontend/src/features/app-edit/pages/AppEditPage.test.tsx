@@ -331,4 +331,75 @@ describe('AppEditPage', () => {
       })
     })
   })
+
+  describe('Error Cases - GET Returns 404', () => {
+    it('when GET /api/v1/apps/:id returns 404, then shows error message instead of loading', async () => {
+      // Arrange
+      server.use(
+        http.get('/api/v1/apps/app-1', () =>
+          HttpResponse.json(
+            {
+              success: false,
+              data: null,
+              error: { code: 'NOT_FOUND' },
+            },
+            { status: 404 },
+          ),
+        ),
+      )
+
+      // Act
+      renderWithProviders(<AppEditPage appId="app-1" />)
+
+      // Assert
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
+      expect(screen.getByText(/app not found/i)).toBeInTheDocument()
+    })
+
+    it('when GET /api/v1/apps/:id returns 500, then shows error message instead of loading', async () => {
+      // Arrange
+      server.use(
+        http.get('/api/v1/apps/app-1', () =>
+          HttpResponse.json(
+            {
+              success: false,
+              data: null,
+              error: { code: 'SERVER_ERROR' },
+            },
+            { status: 500 },
+          ),
+        ),
+      )
+
+      // Act
+      renderWithProviders(<AppEditPage appId="app-1" />)
+
+      // Assert
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
+      expect(screen.getByText(/app not found/i)).toBeInTheDocument()
+    })
+
+    it('when GET /api/v1/apps/:id returns 403, then shows error message instead of loading', async () => {
+      // Arrange
+      server.use(
+        http.get('/api/v1/apps/app-1', () =>
+          HttpResponse.json(
+            {
+              success: false,
+              data: null,
+              error: { code: 'FORBIDDEN' },
+            },
+            { status: 403 },
+          ),
+        ),
+      )
+
+      // Act
+      renderWithProviders(<AppEditPage appId="app-1" />)
+
+      // Assert
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
+      expect(screen.getByText(/app not found/i)).toBeInTheDocument()
+    })
+  })
 })

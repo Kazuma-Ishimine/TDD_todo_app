@@ -15,15 +15,19 @@ export function AppEditPage({ appId }: Props) {
   const [serverError, setServerError] = useState<string>()
   const [isHidden, setIsHidden] = useState(false)
   const { goToAppDetail } = useNavigation()
-  const { data } = useGetApiV1AppsByAppId(appId)
+  const { data, isLoading } = useGetApiV1AppsByAppId(appId)
   const mutation = usePutApiV1AppsByAppId()
 
   const app = (data as unknown as { data?: { data?: unknown } } | null)?.data?.data
 
   if (isHidden) return null
 
-  if (!app) {
+  if (isLoading) {
     return <div role="status">Loading...</div>
+  }
+
+  if (!app && !isLoading) {
+    return <div role="alert" className="p-4 bg-red-50 border border-red-300 rounded text-red-700">App not found. Please check the app ID.</div>
   }
 
   const handleSubmit = async (values: { name: string }) => {
