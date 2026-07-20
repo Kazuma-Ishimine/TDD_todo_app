@@ -1,5 +1,6 @@
 {
   "name": "backend",
+  "type": "module",
   "main": "api/index.ts",
   "scripts": {
     "dev": "tsx --env-file-if-exists=.env --watch src/server.ts",
