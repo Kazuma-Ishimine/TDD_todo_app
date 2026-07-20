@@ -1,5 +1,5 @@
 import { Kysely, MysqlDialect } from 'kysely';
-import { createPool } from 'mysql2';
+import { createPool } from 'mysql2/promise';
 
 import { getMysqlConnectionConfig } from './mysql-connection-config';
 
