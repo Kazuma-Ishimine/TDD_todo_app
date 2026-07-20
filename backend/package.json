@@ -1,5 +1,6 @@
 {
   "name": "backend",
+  "main": "src/server.ts",
   "scripts": {
     "dev": "tsx --env-file-if-exists=.env --watch src/server.ts",
     "migrate": "tsx --env-file-if-exists=.env src/infrastructure/migrate.ts",
