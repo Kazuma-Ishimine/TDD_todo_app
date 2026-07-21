@@ -50,8 +50,11 @@ export function createKysely(): Kysely<Database> {
         user: config.user,
         password: config.password,
         timezone: '+00:00',
+        connectTimeout: 10_000,
+        enableKeepAlive: true,
         waitForConnections: true,
         connectionLimit: 10,
+        queueLimit: 0,
       }),
     }),
   });
