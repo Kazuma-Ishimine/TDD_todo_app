@@ -53,7 +53,10 @@ export function createKysely(): Kysely<Database> {
         connectTimeout: 10_000,
         enableKeepAlive: true,
         waitForConnections: true,
-        connectionLimit: 10,
+        // Filess.io limits this database user to five concurrent connections.
+        connectionLimit: 2,
+        maxIdle: 1,
+        idleTimeout: 10_000,
         queueLimit: 0,
       }),
     }),
