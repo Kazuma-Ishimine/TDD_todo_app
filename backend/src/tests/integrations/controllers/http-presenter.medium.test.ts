@@ -39,6 +39,7 @@ describe('HttpPresenter integration', () => {
     expect(presentTodo(todo)).toEqual({
       id: todo.id,
       appId: todo.appId,
+      parentId: null,
       title: todo.title,
       completed: todo.completed,
       createdAt: todo.createdAt,
