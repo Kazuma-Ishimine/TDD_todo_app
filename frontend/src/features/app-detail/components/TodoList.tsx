@@ -35,14 +35,18 @@ export function TodoList({ todos, appId, onRefresh }: Props) {
 
   return (
     <div className="space-y-2">
-      <label className="flex items-center justify-end gap-2 text-sm">
-        Sort todos
-        <select value={sort} onChange={(event) => setSort(event.currentTarget.value as typeof sort)}>
+      <div className="flex items-center justify-end gap-2 text-sm">
+        <span>Sort todos</span>
+        <select
+          aria-label="Sort todos"
+          value={sort}
+          onChange={(event) => setSort(event.currentTarget.value as typeof sort)}
+        >
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
           <option value="title">Title</option>
         </select>
-      </label>
+      </div>
       {sortedTodos.map((todo) => (
         <TodoItem key={todo.id} todo={todo} appId={appId} onRefresh={onRefresh} />
       ))}
