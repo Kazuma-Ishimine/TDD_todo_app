@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { TodoItem } from './TodoItem'
 
 type Todo = {
@@ -19,14 +21,25 @@ type Props = {
  * Renders a list of todo items.
  */
 export function TodoList({ todos, appId, onRefresh }: Props) {
-  if (todos.length === 0) {
+  const [deletedTodoIds, setDeletedTodoIds] = useState<Set<string>>(() => new Set())
+  const visibleTodos = todos.filter(todo => !deletedTodoIds.has(todo.id))
+
+  if (visibleTodos.length === 0) {
     return <p className="text-gray-500 text-center py-4">No todos yet. Create your first todo!</p>
   }
 
   return (
     <div className="space-y-2">
-      {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} appId={appId} onRefresh={onRefresh} />
+      {visibleTodos.map((todo) => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          appId={appId}
+          onRefresh={onRefresh}
+          onDeleted={(todoId) => {
+            setDeletedTodoIds(current => new Set(current).add(todoId))
+          }}
+        />
       ))}
     </div>
   )

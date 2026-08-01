@@ -18,12 +18,13 @@ type Props = {
   todo: Todo
   appId: string
   onRefresh: () => void
+  onDeleted?: (todoId: string) => void
 }
 
 /**
  * Renders a single todo item with edit and delete actions.
  */
-export function TodoItem({ todo, appId, onRefresh }: Props) {
+export function TodoItem({ todo, appId, onRefresh, onDeleted }: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [successMsg, setSuccessMsg] = useState<string>()
@@ -40,6 +41,7 @@ export function TodoItem({ todo, appId, onRefresh }: Props) {
       setSuccessMsg('Todo deleted successfully')
       setShowConfirm(false)
       setIsDeleted(true)
+      onDeleted?.(todo.id)
     }
   }
 
