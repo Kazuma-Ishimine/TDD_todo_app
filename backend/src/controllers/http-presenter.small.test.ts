@@ -44,6 +44,7 @@ describe('http presenter', () => {
     expect(presentTodo(sampleTodo)).toEqual({
       id: sampleTodo.id,
       appId: sampleTodo.appId,
+      parentId: null,
       title: sampleTodo.title,
       completed: sampleTodo.completed,
       createdAt: sampleTodo.createdAt,

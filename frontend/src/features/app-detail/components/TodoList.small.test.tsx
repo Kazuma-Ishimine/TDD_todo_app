@@ -66,6 +66,20 @@ describe('TodoList', () => {
       const checkboxes = screen.getAllByRole('checkbox')
       expect(checkboxes.some((cb) => (cb as HTMLInputElement).checked)).toBe(true)
     })
+
+    it('when a todo has a parent, then it is rendered as an indented child', () => {
+      renderWithProviders(
+        <TodoList
+          todos={[mockTodos[0], { ...mockTodos[1], parentId: 'todo-1' }]}
+          appId="app-1"
+          onRefresh={vi.fn()}
+        />,
+      )
+
+      expect(screen.getByText('Todo Two').closest('[style]')).toHaveStyle({
+        marginLeft: '1.5rem',
+      })
+    })
   })
 
   describe('Edge Case - Empty List', () => {

@@ -55,6 +55,7 @@ export function presentTodo(todo: TodoEntity): TodoDto {
   return {
     id: todo.id,
     appId: todo.appId,
+    parentId: todo.parentId ?? null,
     title: todo.title,
     completed: todo.completed,
     createdAt: todo.createdAt,

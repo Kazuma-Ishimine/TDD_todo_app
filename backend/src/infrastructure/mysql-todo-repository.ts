@@ -9,6 +9,7 @@ import type { Database } from './db';
 function rowToTodo(row: {
   id: string;
   appId: string;
+  parentId: string | null;
   title: string;
   completed: number;
   createdAt: Date;
@@ -18,6 +19,7 @@ function rowToTodo(row: {
   return {
     id: row.id,
     appId: row.appId,
+    parentId: row.parentId,
     title: row.title,
     completed: row.completed !== 0,
     createdAt: row.createdAt.toISOString(),
@@ -37,6 +39,7 @@ export function createMysqlTodoRepository(db: Kysely<Database>): TodoRepository 
         .values({
           id: todo.id,
           appId: todo.appId,
+          parentId: todo.parentId ?? null,
           title: todo.title,
           completed: todo.completed ? 1 : 0,
           createdAt: new Date(todo.createdAt),
@@ -45,6 +48,7 @@ export function createMysqlTodoRepository(db: Kysely<Database>): TodoRepository 
         })
         .onDuplicateKeyUpdate({
           title: sql`VALUES(title)`,
+          parentId: sql`VALUES(parentId)`,
           completed: sql`VALUES(completed)`,
           updatedAt: sql`VALUES(updatedAt)`,
           deletedAt: sql`VALUES(deletedAt)`,

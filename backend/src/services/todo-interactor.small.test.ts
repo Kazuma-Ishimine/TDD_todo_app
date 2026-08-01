@@ -58,12 +58,38 @@ describe('createTodoInteractor', () => {
     expect(result).toEqual({
       id: FIXED_ID,
       appId: 'app-1',
+      parentId: null,
       title: 'My Todo',
       completed: false,
       createdAt: FIXED_TIME,
       updatedAt: FIXED_TIME,
       deletedAt: null,
     });
+  });
+
+  it('creates a child todo when the parent belongs to the same app', async () => {
+    const parent = {
+      id: 'parent-1',
+      appId: 'app-1',
+      title: 'Parent',
+      completed: false,
+      createdAt: FIXED_TIME,
+      updatedAt: FIXED_TIME,
+      deletedAt: null,
+    };
+    const interactor = makeInteractor(
+      makeAppRepository({ findActiveById: vi.fn().mockResolvedValue(EXISTING_APP) }),
+      makeTodoRepository({ findActiveById: vi.fn().mockResolvedValue(parent) }),
+    );
+
+    const result = await interactor.create({
+      appId: 'app-1',
+      title: 'Child',
+      userId: USER_ID,
+      parentId: 'parent-1',
+    });
+
+    expect(result.parentId).toBe('parent-1');
   });
 
   it('forbids access to another user app', async () => {
