@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 
 import { renderWithProviders } from '../../../test/renderWithProviders'
@@ -36,6 +37,15 @@ describe('AppList', () => {
 
       // Assert
       expect(screen.getAllByRole('button', { name: /view/i })).toHaveLength(2)
+    })
+
+    it('when sort is changed, then apps are reordered', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<AppList apps={mockApps} />)
+
+      expect(screen.getAllByRole('heading', { level: 3 }).map(node => node.textContent)).toEqual(['App Two', 'App One'])
+      await user.selectOptions(screen.getByLabelText('Sort apps'), 'oldest')
+      expect(screen.getAllByRole('heading', { level: 3 }).map(node => node.textContent)).toEqual(['App One', 'App Two'])
     })
   })
 
