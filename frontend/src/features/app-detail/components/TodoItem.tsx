@@ -18,15 +18,18 @@ type Props = {
   todo: Todo
   appId: string
   onRefresh: () => void
+  onDeleted?: (todoId: string) => void
 }
 
 /**
  * Renders a single todo item with edit and delete actions.
  */
-export function TodoItem({ todo, appId, onRefresh }: Props) {
+export function TodoItem({ todo, appId, onRefresh, onDeleted }: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [successMsg, setSuccessMsg] = useState<string>()
+  const [displayCompleted, setDisplayCompleted] = useState(todo.completed)
+  const [isDeleted, setIsDeleted] = useState(false)
 
   const deleteMutation = useDeleteApiV1AppsByAppIdTodosByTodoId()
   const toggleMutation = usePutApiV1AppsByAppIdTodosByTodoId()
@@ -37,17 +40,24 @@ export function TodoItem({ todo, appId, onRefresh }: Props) {
     if (typedResult?.status && typedResult.status >= 200 && typedResult.status < 300) {
       setSuccessMsg('Todo deleted successfully')
       setShowConfirm(false)
-      onRefresh()
+      setIsDeleted(true)
+      onDeleted?.(todo.id)
     }
   }
 
   const handleCheckboxChange = async () => {
-    await toggleMutation.mutateAsync({
-      appId,
-      todoId: todo.id,
-      data: { completed: !todo.completed },
-    })
-    onRefresh()
+    const nextCompleted = !displayCompleted
+    setDisplayCompleted(nextCompleted)
+    try {
+      await toggleMutation.mutateAsync({
+        appId,
+        todoId: todo.id,
+        data: { completed: nextCompleted },
+      })
+    } catch (error: unknown) {
+      setDisplayCompleted(!nextCompleted)
+      throw error
+    }
   }
 
   if (isEditing) {
@@ -62,6 +72,10 @@ export function TodoItem({ todo, appId, onRefresh }: Props) {
     )
   }
 
+  if (isDeleted) {
+    return <p aria-live="polite" className="text-green-600 text-sm">{successMsg}</p>
+  }
+
   return (
     <div className="p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
       {successMsg && (
@@ -70,11 +84,11 @@ export function TodoItem({ todo, appId, onRefresh }: Props) {
       <div className="flex items-center gap-2">
         <input
           type="checkbox"
-          checked={todo.completed}
+          checked={displayCompleted}
           onChange={() => { void handleCheckboxChange().catch(() => {}) }}
           className="cursor-pointer"
         />
-        <span className={todo.completed ? 'line-through text-gray-500' : ''}>{todo.title}</span>
+        <span className={displayCompleted ? 'line-through text-gray-500' : ''}>{todo.title}</span>
         <div className="ml-auto flex gap-2">
           <button
             onClick={() => setIsEditing(true)}
