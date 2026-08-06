@@ -62,6 +62,7 @@ export function createMysqlTodoRepository(db: Kysely<Database>): TodoRepository 
         .selectAll()
         .where('appId', '=', appId)
         .where('deletedAt', 'is', null)
+        .orderBy('createdAt', 'desc')
         .execute();
       return rows.map(rowToTodo);
     } catch (err: unknown) {
