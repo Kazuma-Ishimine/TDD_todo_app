@@ -4,7 +4,7 @@ import type { CreateTodoInput, UpdateTodoInput } from '../services/todo-usecase'
 
 type CreateAppBody = Pick<CreateAppInput, 'name'>;
 type UpdateAppBody = Omit<UpdateAppInput, 'userId'>;
-type CreateTodoBody = Pick<CreateTodoInput, 'appId' | 'title'>;
+type CreateTodoBody = Pick<CreateTodoInput, 'appId' | 'title' | 'parentId'>;
 type UpdateTodoBody = Omit<UpdateTodoInput, 'userId'>;
 import {
   CreateAppRequestSchema,

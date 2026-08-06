@@ -6,6 +6,7 @@ import { usePostApiV1AppsByAppIdTodos, usePutApiV1AppsByAppIdTodosByTodoId } fro
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required').max(200, 'Title must not exceed 200 characters'),
+  parentId: z.string().optional(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -17,16 +18,19 @@ type Todo = {
   createdAt: string
   updatedAt: string
   appId: string
+  parentId?: string | null
 }
+
+type ParentOption = Pick<Todo, 'id' | 'title'>
 
 type Props =
   | { mode: 'edit'; todo: Todo; appId: string; onCancel: () => void; onSuccess: () => void }
-  | { mode: 'create'; todo?: undefined; appId: string; onCancel: () => void; onSuccess: () => void }
+  | { mode: 'create'; todo?: undefined; appId: string; availableParents?: ParentOption[]; onCancel: () => void; onSuccess: () => void }
 
 /**
  * Form for creating or editing a todo.
  */
-export function TodoForm({ mode, todo, appId, onCancel, onSuccess }: Props) {
+export function TodoForm({ mode, todo, appId, onCancel, onSuccess, ...props }: Props) {
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { title: mode === 'edit' ? todo?.title ?? '' : '' },
@@ -45,7 +49,7 @@ export function TodoForm({ mode, todo, appId, onCancel, onSuccess }: Props) {
         onSuccess()
       }
     } else {
-      const result = await createMutation.mutateAsync({ appId, data: { title: values.title } }) as unknown
+      const result = await createMutation.mutateAsync({ appId, data: { title: values.title, parentId: values.parentId || null } }) as unknown
       const typedResult = result as { status?: number }
       if (typedResult?.status && typedResult.status >= 200 && typedResult.status < 300) {
         onSuccess()
@@ -87,6 +91,16 @@ export function TodoForm({ mode, todo, appId, onCancel, onSuccess }: Props) {
       )}
 
       {mode === 'create' && (
+        <>
+        <div className="mb-2">
+          <label htmlFor="todo-parent" className="block text-sm font-medium mb-1">Parent Todo</label>
+          <select id="todo-parent" {...register('parentId')} className="w-full px-3 py-2 border border-gray-300 rounded text-sm">
+            <option value="">None (top level)</option>
+            {'availableParents' in props && props.availableParents?.map(parent => (
+              <option key={parent.id} value={parent.id}>{parent.title}</option>
+            ))}
+          </select>
+        </div>
         <div className="mb-2">
           <label htmlFor="todo-completed" className="block text-sm font-medium mb-1">Completed</label>
           <input
@@ -96,6 +110,7 @@ export function TodoForm({ mode, todo, appId, onCancel, onSuccess }: Props) {
             aria-label="Completed"
           />
         </div>
+        </>
       )}
 
       <div className="flex gap-2">

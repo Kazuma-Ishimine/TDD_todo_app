@@ -121,6 +121,7 @@ export function AppDetailPage({ appId }: Props) {
           <TodoForm
             mode="create"
             appId={appId}
+            availableParents={todos}
             onCancel={() => setShowCreateTodo(false)}
             onSuccess={() => { setShowCreateTodo(false); void refetchTodos() }}
           />

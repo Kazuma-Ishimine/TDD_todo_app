@@ -4,6 +4,7 @@
 export type TodoEntity = {
   id: string;
   appId: string;
+  parentId?: string | null;
   title: string;
   completed: boolean;
   createdAt: string;

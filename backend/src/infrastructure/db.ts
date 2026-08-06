@@ -15,6 +15,7 @@ export interface AppTable {
 export interface TodoTable {
   id: string;
   appId: string;
+  parentId: string | null;
   title: string;
   completed: number; // MySQL BOOLEAN → 0/1
   createdAt: Date;

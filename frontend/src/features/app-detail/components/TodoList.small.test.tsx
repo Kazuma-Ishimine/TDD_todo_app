@@ -69,21 +69,18 @@ describe('TodoList', () => {
       expect(checkboxes.some((cb) => (cb as HTMLInputElement).checked)).toBe(true)
     })
 
-    it('when sort is changed, then todos are reordered', async () => {
-      const user = userEvent.setup()
+    it('when a todo has a parent, then it is rendered as an indented child', () => {
       renderWithProviders(
-        <TodoList todos={mockTodos} appId="app-1" onRefresh={vi.fn()} />,
+        <TodoList
+          todos={[mockTodos[0], { ...mockTodos[1], parentId: 'todo-1' }]}
+          appId="app-1"
+          onRefresh={vi.fn()}
+        />,
       )
 
-      expect(screen.getAllByRole('checkbox').map(node => node.parentElement?.textContent)).toEqual([
-        expect.stringContaining('Todo Two'),
-        expect.stringContaining('Todo One'),
-      ])
-      await user.selectOptions(screen.getByLabelText('Sort todos'), 'oldest')
-      expect(screen.getAllByRole('checkbox').map(node => node.parentElement?.textContent)).toEqual([
-        expect.stringContaining('Todo One'),
-        expect.stringContaining('Todo Two'),
-      ])
+      expect(screen.getByText('Todo Two').closest('[style]')).toHaveStyle({
+        marginLeft: '1.5rem',
+      })
     })
   })
 

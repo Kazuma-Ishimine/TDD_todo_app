@@ -16,6 +16,7 @@ export const AppDtoSchema = z.object({
 export const TodoDtoSchema = z.object({
   id: z.string(),
   appId: z.string(),
+  parentId: z.string().nullable(),
   title: z.string(),
   completed: z.boolean(),
   createdAt: z.string(),
@@ -67,6 +68,7 @@ export const UpdateAppRequestSchema = z.object({
  */
 export const CreateTodoRequestSchema = z.object({
   title: z.string().trim().min(1).max(200),
+  parentId: z.string().nullable().optional(),
 });
 
 /**
@@ -75,4 +77,5 @@ export const CreateTodoRequestSchema = z.object({
 export const UpdateTodoRequestSchema = z.object({
   title: z.string().trim().min(1).max(200).optional(),
   completed: z.boolean().optional(),
+  parentId: z.string().nullable().optional(),
 });

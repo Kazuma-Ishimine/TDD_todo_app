@@ -51,10 +51,12 @@ export function createTodoInteractor(
 
   async function create(input: CreateTodoInput): Promise<TodoEntity> {
     await ensureAppBelongsToUser(input.appId, input.userId);
+    if (input.parentId) await findExistingTodo(input.appId, input.parentId);
     const timestamp = now();
     const todo: TodoEntity = {
       id: generateId(),
       appId: input.appId,
+      parentId: input.parentId ?? null,
       title: input.title,
       completed: false,
       createdAt: timestamp,
@@ -78,10 +80,15 @@ export function createTodoInteractor(
   async function update(input: UpdateTodoInput): Promise<TodoEntity> {
     await ensureAppBelongsToUser(input.appId, input.userId);
     const todo = await findExistingTodo(input.appId, input.todoId);
+    if (input.parentId === input.todoId) {
+      throw new AppError('VALIDATION_ERROR', 'A Todo cannot be its own parent');
+    }
+    if (input.parentId) await findExistingTodo(input.appId, input.parentId);
     const updatedTodo: TodoEntity = {
       ...todo,
       title: input.title ?? todo.title,
       completed: input.completed ?? todo.completed,
+      parentId: input.parentId === undefined ? todo.parentId ?? null : input.parentId,
       updatedAt: now(),
     };
     await todoRepository.save(updatedTodo);

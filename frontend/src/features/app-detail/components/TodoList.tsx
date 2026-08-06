@@ -9,6 +9,7 @@ type Todo = {
   createdAt: string
   updatedAt: string
   appId: string
+  parentId?: string | null
 }
 
 type Props = {
@@ -27,29 +28,15 @@ export function TodoList({ todos, appId, onRefresh }: Props) {
     return <p className="text-gray-500 text-center py-4">No todos yet. Create your first todo!</p>
   }
 
-  const sortedTodos = [...todos].sort((left, right) => {
-    if (sort === 'title') return left.title.localeCompare(right.title)
-    const comparison = left.createdAt.localeCompare(right.createdAt)
-    return sort === 'newest' ? -comparison : comparison
-  })
+  const renderBranch = (parentId: string | null, depth: number): React.ReactNode =>
+    todos
+      .filter(todo => (todo.parentId ?? null) === parentId)
+      .map(todo => (
+        <div key={todo.id} style={{ marginLeft: `${depth * 1.5}rem` }}>
+          <TodoItem todo={todo} appId={appId} onRefresh={onRefresh} />
+          {renderBranch(todo.id, depth + 1)}
+        </div>
+      ))
 
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-end gap-2 text-sm">
-        <span>Sort todos</span>
-        <select
-          aria-label="Sort todos"
-          value={sort}
-          onChange={(event) => setSort(event.currentTarget.value as typeof sort)}
-        >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="title">Title</option>
-        </select>
-      </div>
-      {sortedTodos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} appId={appId} onRefresh={onRefresh} />
-      ))}
-    </div>
-  )
+  return <div className="space-y-2">{renderBranch(null, 0)}</div>
 }
