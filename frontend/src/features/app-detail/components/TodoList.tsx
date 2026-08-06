@@ -21,25 +21,34 @@ type Props = {
  * Renders a list of todo items.
  */
 export function TodoList({ todos, appId, onRefresh }: Props) {
-  const [deletedTodoIds, setDeletedTodoIds] = useState<Set<string>>(() => new Set())
-  const visibleTodos = todos.filter(todo => !deletedTodoIds.has(todo.id))
+  const [sort, setSort] = useState<'newest' | 'oldest' | 'title'>('newest')
 
-  if (visibleTodos.length === 0) {
+  if (todos.length === 0) {
     return <p className="text-gray-500 text-center py-4">No todos yet. Create your first todo!</p>
   }
 
+  const sortedTodos = [...todos].sort((left, right) => {
+    if (sort === 'title') return left.title.localeCompare(right.title)
+    const comparison = left.createdAt.localeCompare(right.createdAt)
+    return sort === 'newest' ? -comparison : comparison
+  })
+
   return (
     <div className="space-y-2">
-      {visibleTodos.map((todo) => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          appId={appId}
-          onRefresh={onRefresh}
-          onDeleted={(todoId) => {
-            setDeletedTodoIds(current => new Set(current).add(todoId))
-          }}
-        />
+      <div className="flex items-center justify-end gap-2 text-sm">
+        <span>Sort todos</span>
+        <select
+          aria-label="Sort todos"
+          value={sort}
+          onChange={(event) => setSort(event.currentTarget.value as typeof sort)}
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="title">Title</option>
+        </select>
+      </div>
+      {sortedTodos.map((todo) => (
+        <TodoItem key={todo.id} todo={todo} appId={appId} onRefresh={onRefresh} />
       ))}
     </div>
   )
