@@ -151,7 +151,7 @@ describe('TodoItem', () => {
       expect(screen.getByRole('dialog')).toBeInTheDocument()
     })
 
-    it('when delete confirmed, then calls DELETE API and invokes onRefresh', async () => {
+    it('when delete confirmed, then removes the todo without refetching the list', async () => {
       // Arrange
       const user = userEvent.setup()
       const onRefresh = vi.fn()
@@ -179,7 +179,8 @@ describe('TodoItem', () => {
       await user.click(screen.getByRole('button', { name: /confirm/i }))
 
       // Assert
-      await waitFor(() => expect(onRefresh).toHaveBeenCalled())
+      await waitFor(() => expect(screen.queryByText('Test Todo')).not.toBeInTheDocument())
+      expect(onRefresh).not.toHaveBeenCalled()
     })
 
     it('when delete confirmed, then shows success toast "Todo deleted successfully"', async () => {
@@ -233,7 +234,7 @@ describe('TodoItem', () => {
   })
 
   describe('Interaction - Checkbox Toggle', () => {
-    it('when checkbox clicked on pending todo, then calls PATCH/PUT API to mark completed', async () => {
+    it('when checkbox clicked on pending todo, then updates immediately without refetching', async () => {
       // Arrange
       const user = userEvent.setup()
       const onRefresh = vi.fn()
@@ -253,7 +254,8 @@ describe('TodoItem', () => {
       await user.click(screen.getByRole('checkbox'))
 
       // Assert
-      await waitFor(() => expect(onRefresh).toHaveBeenCalled())
+      expect(screen.getByRole('checkbox')).toBeChecked()
+      await waitFor(() => expect(onRefresh).not.toHaveBeenCalled())
     })
   })
 

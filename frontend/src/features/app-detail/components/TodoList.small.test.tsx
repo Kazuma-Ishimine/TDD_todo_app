@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { renderWithProviders } from '../../../test/renderWithProviders'
+import { server } from '../../../test/server'
 import { TodoList } from './TodoList'
 
 const mockTodos = [
@@ -87,6 +88,25 @@ describe('TodoList', () => {
   })
 
   describe('Edge Case - Empty List', () => {
+    it('when the last todo is deleted, then the empty state is shown without refetching', async () => {
+      const user = userEvent.setup()
+      const onRefresh = vi.fn()
+      server.use(
+        http.delete('/api/v1/apps/app-1/todos/todo-1', () =>
+          HttpResponse.json({ success: true, data: mockTodos[0] }),
+        ),
+      )
+      renderWithProviders(
+        <TodoList todos={[mockTodos[0]]} appId="app-1" onRefresh={onRefresh} />,
+      )
+
+      await user.click(screen.getByRole('button', { name: /delete/i }))
+      await user.click(screen.getByRole('button', { name: /confirm/i }))
+
+      expect(await screen.findByText(/no todos yet/i)).toBeInTheDocument()
+      expect(onRefresh).not.toHaveBeenCalled()
+    })
+
     it('when no todos, then shows empty state message', () => {
       // Arrange + Act
       renderWithProviders(

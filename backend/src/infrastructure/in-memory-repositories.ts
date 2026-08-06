@@ -26,6 +26,7 @@ export function createInMemoryAppRepository(
       withRepositoryError(() =>
         [...storage.apps.values()]
           .filter(app => app.userId === userId && app.deletedAt === null)
+          .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
           .map(cloneApp),
       ),
     );
@@ -85,6 +86,7 @@ export function createInMemoryTodoRepository(
       withRepositoryError(() =>
         [...storage.todos.values()]
           .filter(todo => todo.appId === appId && todo.deletedAt === null)
+          .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
           .map(cloneTodo),
       ),
     );
