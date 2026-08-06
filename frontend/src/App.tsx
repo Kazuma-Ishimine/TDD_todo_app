@@ -46,18 +46,8 @@ function App() {
               type="button"
               onClick={goToUserProfile}
               aria-label="プロフィールページへ移動"
-              className="flex items-center gap-1.5 rounded bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:bg-blue-200 transition-colors duration-150"
+              className="rounded bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 active:bg-blue-200 transition-colors duration-150"
             >
-              {/* Inline user icon (SVG, no extra dependency) */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 shrink-0"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-              </svg>
               プロフィール
             </button>
             <LogoutButton />
