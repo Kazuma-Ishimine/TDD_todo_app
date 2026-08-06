@@ -117,6 +117,26 @@ describe('App', () => {
   })
 
   describe('Authenticated - App List Route', () => {
+    it('when authenticated, then the profile action is shown without an automatic profile image', () => {
+      // Arrange
+      const store = createStore()
+      store.set(authAtom, {
+        token: 'test-token',
+        user: { id: 'user-1', email: 'test@example.com' },
+      })
+
+      // Act
+      renderWithProviders(<App />, { store, initialPage: { name: 'app-list' } })
+
+      // Assert
+      const profileButton = screen.getByRole('button', {
+        name: 'プロフィールページへ移動',
+      })
+      expect(profileButton).toHaveTextContent('プロフィール')
+      expect(profileButton.querySelector('svg')).not.toBeInTheDocument()
+      expect(profileButton.querySelector('img')).not.toBeInTheDocument()
+    })
+
     it('when authenticated, then AppListPage is displayed with Create App button', async () => {
       // Arrange
       server.use(

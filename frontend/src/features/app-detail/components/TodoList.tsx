@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { TodoItem } from './TodoItem'
 
 type Todo = {
@@ -20,6 +22,8 @@ type Props = {
  * Renders a list of todo items.
  */
 export function TodoList({ todos, appId, onRefresh }: Props) {
+  const [sort, setSort] = useState<'newest' | 'oldest' | 'title'>('newest')
+
   if (todos.length === 0) {
     return <p className="text-gray-500 text-center py-4">No todos yet. Create your first todo!</p>
   }

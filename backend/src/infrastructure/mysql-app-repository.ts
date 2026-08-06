@@ -61,6 +61,7 @@ export function createMysqlAppRepository(db: Kysely<Database>): AppRepository {
         .selectAll()
         .where('userId', '=', userId)
         .where('deletedAt', 'is', null)
+        .orderBy('createdAt', 'desc')
         .execute();
       return rows.map(rowToApp);
     } catch (err: unknown) {

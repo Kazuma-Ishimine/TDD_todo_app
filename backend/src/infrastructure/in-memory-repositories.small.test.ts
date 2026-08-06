@@ -57,6 +57,16 @@ describe('createInMemoryAppRepository', () => {
     expect(await repo.listActiveByUserId('user-1')).toHaveLength(1);
   });
 
+  it('lists active apps newest first', async () => {
+    await repo.save(makeApp({ id: 'older', createdAt: '2024-01-01T00:00:00.000Z' }));
+    await repo.save(makeApp({ id: 'newer', createdAt: '2024-01-02T00:00:00.000Z' }));
+
+    expect((await repo.listActiveByUserId('user-1')).map(app => app.id)).toEqual([
+      'newer',
+      'older',
+    ]);
+  });
+
   it('scopes duplicate name checks to the owner', async () => {
     await repo.save(makeApp({ id: 'app-1', userId: 'user-1', name: 'Shared' }));
     await repo.save(makeApp({ id: 'app-2', userId: 'user-2', name: 'Shared' }));
@@ -85,6 +95,16 @@ describe('createInMemoryTodoRepository', () => {
     await repo.save(makeTodo({ id: 'todo-1', appId: 'app-1' }));
     await repo.save(makeTodo({ id: 'todo-2', appId: 'app-1' }));
     expect(await repo.listActiveByAppId('app-1')).toHaveLength(2);
+  });
+
+  it('lists active todos newest first', async () => {
+    await repo.save(makeTodo({ id: 'older', createdAt: '2024-01-01T00:00:00.000Z' }));
+    await repo.save(makeTodo({ id: 'newer', createdAt: '2024-01-02T00:00:00.000Z' }));
+
+    expect((await repo.listActiveByAppId('app-1')).map(todo => todo.id)).toEqual([
+      'newer',
+      'older',
+    ]);
   });
 
   it('wraps corrupted storage errors as AppError', async () => {
